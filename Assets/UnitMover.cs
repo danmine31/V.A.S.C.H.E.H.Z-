@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class UnitMover : MonoBehaviour
 {
     private NavMeshAgent agent;
-    private bool isSelected = false;
+    public bool isSelected = false;
     private Renderer unitRenderer;
 
     void Start()
@@ -13,37 +13,15 @@ public class UnitMover : MonoBehaviour
         unitRenderer = GetComponent<Renderer>();
     }
 
-    void Update()
+    public void SetSelected(bool status)
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        isSelected = status;
+        if (unitRenderer != null)
+            unitRenderer.material.color = isSelected ? Color.green : Color.white;
+    }
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.transform == this.transform)
-                {
-                    isSelected = true;
-                    unitRenderer.material.color = Color.green;
-                }
-                else
-                {
-                    isSelected = false;
-                    unitRenderer.material.color = Color.white;
-                }
-            }
-        }
-
-        if (Input.GetMouseButtonDown(1) && isSelected) 
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                agent.SetDestination(hit.point);
-            }
-        }
+    public void MoveTo(Vector3 destination)
+    {
+        if (agent != null) agent.SetDestination(destination);
     }
 }
