@@ -55,7 +55,7 @@ public class SelectionController : MonoBehaviour
             Mathf.Abs(startMousePos.y - Input.mousePosition.y)
         );
 
-        UnitMover[] allUnits = FindObjectsOfType<UnitMover>();
+        var allUnits = Object.FindObjectsByType<UnitMover>(FindObjectsInactive.Exclude);
         foreach (UnitMover unit in allUnits)
         {
             Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
@@ -67,10 +67,28 @@ public class SelectionController : MonoBehaviour
         }
     }
 
+    public LayerMask enemyLayer;
+
     void MoveSelectedUnits()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000, groundLayer))
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 1000, enemyLayer))
+        {
+            Health enemyHealth = hit.collider.GetComponent<Health>();
+            if (enemyHealth != null)
+            {
+                foreach (var unit in selectedUnits)
+                {
+                    Debug.Log("Приказ: Атаковать " + hit.collider.name);
+                    unit.SetTarget(enemyHealth);
+                }
+                return;
+            }
+        }
+
+        if (Physics.Raycast(ray, out hit, 1000, groundLayer))
         {
             foreach (var unit in selectedUnits)
             {
