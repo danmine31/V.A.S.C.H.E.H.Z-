@@ -4,56 +4,36 @@ public class Health : MonoBehaviour
 {
     public float maxHealth = 100f;
     public float currentHealth;
-    public HealthBar healthBarPrefab;
-    public HealthBar healthBarInstance;
-    public Vector3 healthBarOffset = new Vector3(0, 2.5f, 0);
+
+    [Header("Настройки полоски")]
+    public GameObject healthBarPrefab;
+    private HealthBar healthBar;
 
     void Start()
     {
         currentHealth = maxHealth;
         if (healthBarPrefab != null)
         {
-            healthBarInstance = Instantiate(healthBarPrefab);
-            Canvas canvas = FindObjectOfType<Canvas>();
-            if (canvas != null)
+            GameObject hbObj = Instantiate(healthBarPrefab);
+            healthBar = hbObj.GetComponent<HealthBar>();
+            if (healthBar != null)
             {
-                healthBarInstance.transform.SetParent(canvas.transform, false);
+                healthBar.target = this.transform;
+                healthBar.UpdateHealthBar(currentHealth, maxHealth);
             }
-            healthBarInstance.target = transform;
-            healthBarInstance.offset = healthBarOffset;
-            healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
         }
     }
 
     public void TakeDamage(float amount)
     {
-        currentHealth = Mathf.Max(0, currentHealth - amount);
-        if (healthBarInstance != null)
-        {
-            healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
-        }
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    public void Heal(float amount)
-    {
-        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        if (healthBarInstance != null)
-        {
-            healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
-        }
+        currentHealth -= amount;
+        if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
+        if (currentHealth <= 0) Die();
     }
 
     void Die()
     {
-        if (healthBarInstance != null && healthBarInstance.gameObject != null)
-        {
-            Destroy(healthBarInstance.gameObject);
-        }
+        if (healthBar != null) Destroy(healthBar.gameObject);
         Destroy(gameObject);
     }
 }
