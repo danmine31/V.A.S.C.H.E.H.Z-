@@ -63,7 +63,6 @@ public class SelectionController : MonoBehaviour
         Vector2 currentMousePos = Input.mousePosition;
         float width = currentMousePos.x - startMousePos.x;
         float height = currentMousePos.y - startMousePos.y;
-
         selectionBoxVisual.sizeDelta = new Vector2(Mathf.Abs(width), Mathf.Abs(height));
         selectionBoxVisual.anchoredPosition = startMousePos + new Vector2(width / 2, height / 2);
     }

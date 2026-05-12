@@ -1,13 +1,14 @@
 using UnityEngine;
 
+public enum Fraction { People, Mages, Robots }
+
 public class Health : MonoBehaviour
 {
+    public Fraction unitFraction;
     public float maxHealth = 100f;
     public float currentHealth;
-
-    [Header("Настройки полоски")]
+    public HealthBar healthBar;
     public GameObject healthBarPrefab;
-    private HealthBar healthBar;
 
     void Start()
     {
@@ -24,9 +25,19 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, Fraction attackerFraction)
     {
-        currentHealth -= amount;
+        float finalDamage = amount;
+
+        if (attackerFraction == Fraction.Mages && unitFraction == Fraction.People)
+            finalDamage *= 1.5f;
+        if (attackerFraction == Fraction.People && unitFraction == Fraction.Robots)
+            finalDamage *= 1.5f;
+        if (attackerFraction == Fraction.Robots && unitFraction == Fraction.Mages)
+            finalDamage *= 1.5f;
+
+        currentHealth -= finalDamage;
+
         if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
         if (currentHealth <= 0) Die();
     }

@@ -12,10 +12,12 @@ public class UnitMover : MonoBehaviour
     private float gatherTimer;
 
     [Header("Combat Settings")]
-    public float attackRange = 2f;
+    public float attackRange = 10f;
     public float attackDamage = 10f;
     public float attackSpeed = 1f;
     private float nextAttackTime;
+    public GameObject bulletPrefab;
+    public Transform firePoint;
 
     [Header("Gathering Settings")]
     public float gatherRange = 2.5f;
@@ -29,7 +31,7 @@ public class UnitMover : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         unitRenderer = GetComponent<Renderer>();
         inventory = GetComponent<UnitInventory>();
-        
+
         if (unitRenderer != null)
         {
             originalColor = unitRenderer.material.color;
@@ -51,8 +53,26 @@ public class UnitMover : MonoBehaviour
 
             if (distance <= attackRange)
             {
-                agent.isStopped = true;
-                Attack();
+                Vector3 direction = (targetEnemy.transform.position - firePoint.position).normalized;
+                RaycastHit hit;
+                if (Physics.Raycast(firePoint.position, direction, out hit, attackRange))
+                {
+                    if (hit.transform.root == targetEnemy.transform.root)
+                    {
+                        agent.isStopped = true;
+
+                        if (Time.time >= nextAttackTime)
+                        {
+                            Shoot();
+                            nextAttackTime = Time.time + attackSpeed;
+                        }
+                    }
+                    else
+                    {
+                        agent.isStopped = false;
+                        agent.SetDestination(targetEnemy.transform.position);
+                    }
+                }
             }
             else
             {
@@ -62,39 +82,43 @@ public class UnitMover : MonoBehaviour
         }
         else if (targetResource != null)
         {
-            if (inventory != null && inventory.IsFull)
-            {
-                targetResource = null;
-                return;
-            }
+            HandleResourceGathering();
+        }
+    }
 
-            float distance = Vector3.Distance(transform.position, targetResource.transform.position);
-            if (distance <= gatherRange)
-            {
-                agent.isStopped = true;
-                gatherTimer += Time.deltaTime;
+    void HandleResourceGathering()
+    {
+        if (inventory != null && inventory.IsFull)
+        {
+            targetResource = null;
+            return;
+        }
 
-                if (gatherTimer >= gatherCooldown)
+        float distance = Vector3.Distance(transform.position, targetResource.transform.position);
+        if (distance <= gatherRange)
+        {
+            agent.isStopped = true;
+            gatherTimer += Time.deltaTime;
+
+            if (gatherTimer >= gatherCooldown)
+            {
+                int amount = targetResource.Gather(5);
+                if (inventory != null)
                 {
-                    int amount = targetResource.Gather(5);
-                    if (inventory != null)
-                    {
-                        inventory.AddResource(targetResource.type, amount);
-                    }
-                    gatherTimer = 0;
+                    inventory.AddResource(targetResource.type, amount);
                 }
+                gatherTimer = 0;
             }
-            else
-            {
-                agent.isStopped = false;
-                agent.SetDestination(targetResource.transform.position);
-            }
+        }
+        else
+        {
+            agent.isStopped = false;
+            agent.SetDestination(targetResource.transform.position);
         }
     }
 
     public void SetSelected(bool isSelected)
     {
-        Debug.Log(gameObject.name + " выделен: " + isSelected);
         if (unitRenderer != null)
         {
             unitRenderer.material.color = isSelected ? selectedColor : originalColor;
@@ -122,20 +146,17 @@ public class UnitMover : MonoBehaviour
         agent.SetDestination(resource.transform.position);
     }
 
-    void Attack()
+    void Shoot()
     {
-        if (targetEnemy == null || targetEnemy.gameObject == null)
-        {
-            targetEnemy = null;
-            agent.isStopped = false;
-            return;
-        }
+        if (targetEnemy == null || bulletPrefab == null || firePoint == null) return;
 
-        if (Time.time >= nextAttackTime)
+        GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        Projectile projectile = bulletObj.GetComponent<Projectile>();
+
+        if (projectile != null)
         {
-            Debug.Log("Атакую врага: " + targetEnemy.name);
-            targetEnemy.TakeDamage(attackDamage);
-            nextAttackTime = Time.time + attackSpeed;
+            Fraction myFraction = GetComponent<Health>().unitFraction;
+            projectile.Setup(targetEnemy, attackDamage, myFraction);
         }
     }
 }
