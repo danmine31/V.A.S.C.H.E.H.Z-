@@ -45,11 +45,7 @@ public class UnitMover : MonoBehaviour
             if (targetEnemy.gameObject == null)
             {
                 targetEnemy = null;
-                
-                if (agent.hasPath)
-                {
-                    agent.ResetPath();
-                }
+                if (agent.hasPath) agent.ResetPath();
                 agent.isStopped = true; 
                 return;
             }
@@ -58,29 +54,27 @@ public class UnitMover : MonoBehaviour
 
             if (distance <= attackRange)
             {
-                Vector3 direction = (targetEnemy.transform.position - firePoint.position).normalized;
-                RaycastHit hit;
-                
-                if (Physics.Raycast(firePoint.position, direction, out hit, attackRange))
+                if (!agent.isStopped)
                 {
-                    if (hit.transform.root == targetEnemy.transform.root)
-                    {
-                        agent.isStopped = true;
+                    agent.isStopped = true;
+                    if (agent.hasPath) agent.ResetPath();
+                    agent.velocity = Vector3.zero;
+                }
 
-                        if (Time.time >= nextAttackTime)
-                        {
-                            Shoot();
-                            nextAttackTime = Time.time + attackSpeed;
-                        }
-                    }
-                    else
-                    {
-                        agent.isStopped = false;
-                        agent.SetDestination(targetEnemy.transform.position);
-                    }
+                Vector3 lookDir = targetEnemy.transform.position - transform.position;
+                lookDir.y = 0;
+                if (lookDir != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+                }
+
+                if (Time.time >= nextAttackTime)
+                {
+                    Shoot();
+                    nextAttackTime = Time.time + attackSpeed;
                 }
             }
-            else
+            else if (distance > attackRange + 0.1f) 
             {
                 agent.isStopped = false;
                 agent.SetDestination(targetEnemy.transform.position);
