@@ -42,10 +42,15 @@ public class UnitMover : MonoBehaviour
     {
         if (targetEnemy != null)
         {
-            if (targetEnemy == null || targetEnemy.gameObject == null)
+            if (targetEnemy.gameObject == null)
             {
                 targetEnemy = null;
-                agent.isStopped = false;
+                
+                if (agent.hasPath)
+                {
+                    agent.ResetPath();
+                }
+                agent.isStopped = true; 
                 return;
             }
 
@@ -55,6 +60,7 @@ public class UnitMover : MonoBehaviour
             {
                 Vector3 direction = (targetEnemy.transform.position - firePoint.position).normalized;
                 RaycastHit hit;
+                
                 if (Physics.Raycast(firePoint.position, direction, out hit, attackRange))
                 {
                     if (hit.transform.root == targetEnemy.transform.root)

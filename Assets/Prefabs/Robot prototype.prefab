@@ -13,11 +13,10 @@ GameObject:
   - component: {fileID: 5144260302819219487}
   - component: {fileID: 1288709080322751721}
   - component: {fileID: 4673921159088589987}
-  - component: {fileID: 6419932983838692022}
   - component: {fileID: 9198008379798283744}
   m_Layer: 6
   m_Name: Robot prototype
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,26 +132,6 @@ MonoBehaviour:
   currentHealth: 1000
   healthBar: {fileID: 0}
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
---- !u!114 &6419932983838692022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1399708781487340977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e96fa69e68b1045856cac7a0938d5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitMover
-  attackRange: 4
-  attackDamage: 120
-  attackSpeed: 0.25
-  bulletPrefab: {fileID: 6014821155850210489, guid: 0c880a1b30a74aa4ba194db717a1ecf3, type: 3}
-  firePoint: {fileID: 6846397951232768716}
-  gatherRange: 2.5
-  gatherCooldown: 1.5
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!195 &9198008379798283744
 NavMeshAgent:
   m_ObjectHideFlags: 0

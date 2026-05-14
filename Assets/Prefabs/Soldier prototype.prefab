@@ -15,9 +15,11 @@ GameObject:
   - component: {fileID: 216492478357597687}
   - component: {fileID: 6928458649845959930}
   - component: {fileID: 8291195231970629218}
+  - component: {fileID: -3985606879613819133}
+  - component: {fileID: -9093132376275141146}
   m_Layer: 6
   m_Name: Soldier prototype
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,7 +154,7 @@ MonoBehaviour:
   attackSpeed: 1
   bulletPrefab: {fileID: 6014821155850210489, guid: 0c880a1b30a74aa4ba194db717a1ecf3, type: 3}
   firePoint: {fileID: 3512469186899213038}
-  gatherRange: 2.5
+  gatherRange: 5
   gatherCooldown: 1.5
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!195 &8291195231970629218
@@ -177,6 +179,33 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-3985606879613819133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357777502235203779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f25ab4d3645c5ef46b4a5c422a4636e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceGatherer
+--- !u!114 &-9093132376275141146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357777502235203779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
+  capacity: 20
+  currentType: 0
+  currentAmount: 0
 --- !u!1 &6041199604075924308
 GameObject:
   m_ObjectHideFlags: 0
