@@ -6,9 +6,9 @@ public class SelectionController : MonoBehaviour
     public RectTransform selectionBoxVisual;
     public LayerMask groundLayer;
     public LayerMask unitLayer;
-    public LayerMask enemyLayer;
+    public LayerMask resourceLayer; 
 
-    private List<UnitMover> selectedUnits = new List<UnitMover>();
+    private List<UnitController> selectedUnits = new List<UnitController>();
     private Vector2 startMousePos;
     private bool isBoxSelecting = false;
 
@@ -69,6 +69,7 @@ public class SelectionController : MonoBehaviour
 
     void SelectSingleUnit()
     {
+        selectedUnits.RemoveAll(u => u == null);
         foreach (var unit in selectedUnits) unit.SetSelected(false);
         selectedUnits.Clear();
 
@@ -77,8 +78,10 @@ public class SelectionController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 1000, unitLayer))
         {
-            UnitMover unit = hit.collider.GetComponent<UnitMover>();
-            if (unit != null)
+            UnitController unit = hit.collider.GetComponent<UnitController>();
+            Health health = hit.collider.GetComponent<Health>();
+
+            if (unit != null && health != null && health.teamID == 1)
             {
                 selectedUnits.Add(unit);
                 unit.SetSelected(true);
@@ -89,6 +92,7 @@ public class SelectionController : MonoBehaviour
 
     void SelectUnitsInBox()
     {
+        selectedUnits.RemoveAll(u => u == null);
         foreach (var unit in selectedUnits) unit.SetSelected(false);
         selectedUnits.Clear();
 
@@ -99,10 +103,12 @@ public class SelectionController : MonoBehaviour
             Mathf.Abs(startMousePos.y - Input.mousePosition.y)
         );
 
-        var allUnits = Object.FindObjectsByType<UnitMover>(FindObjectsInactive.Exclude);
-        foreach (UnitMover unit in allUnits)
+        var allUnits = Object.FindObjectsByType<UnitController>(FindObjectsInactive.Exclude);
+        foreach (UnitController unit in allUnits)
         {
-            if (IsInLayerMask(unit.gameObject.layer, unitLayer))
+            Health health = unit.GetComponent<Health>();
+            
+            if (health != null && health.teamID == 1)
             {
                 Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
                 if (selectionRect.Contains(screenPos))
@@ -115,29 +121,32 @@ public class SelectionController : MonoBehaviour
         Debug.Log("Выбрано юнитов: " + selectedUnits.Count);
     }
 
-    bool IsInLayerMask(int layer, LayerMask layerMask)
-    {
-        return (layerMask & (1 << layer)) != 0;
-    }
-
-    public LayerMask resourceLayer;
-
     void MoveOrAttack()
     {
+        selectedUnits.RemoveAll(unit => unit == null);
+        if (selectedUnits.Count == 0) return;
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 1000, enemyLayer))
+        if (Physics.Raycast(ray, out hit, 1000, unitLayer))
         {
             Health enemyHealth = hit.collider.GetComponent<Health>();
             if (enemyHealth != null)
             {
-                foreach (var unit in selectedUnits)
+                if (enemyHealth.teamID != 1) 
                 {
-                    Debug.Log("Приказ: атаковать " + hit.collider.name);
-                    unit.SetTarget(enemyHealth);
+                    foreach (var unit in selectedUnits)
+                    {
+                        unit.SetTarget(enemyHealth);
+                        Debug.Log("Приказ: атаковать " + hit.collider.name);
+                    }
+                    return;
                 }
-                return;
+                else
+                {
+                    return;
+                }
             }
         }
 
@@ -148,8 +157,8 @@ public class SelectionController : MonoBehaviour
             {
                 foreach (var unit in selectedUnits)
                 {
-                    Debug.Log("Приказ: добывать ресурс " + hit.collider.name);
                     unit.SetResourceTarget(resource);
+                    Debug.Log("Приказ: добывать ресурс " + hit.collider.name);
                 }
                 return;
             }
@@ -160,9 +169,9 @@ public class SelectionController : MonoBehaviour
             foreach (var unit in selectedUnits)
             {
                 unit.MoveTo(hit.point);
+                Debug.Log("Приказ: идти в точку " + hit.point);
             }
         }
     }
 }
-
 

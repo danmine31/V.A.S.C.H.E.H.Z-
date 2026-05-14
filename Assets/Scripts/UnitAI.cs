@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public enum AIBehavior { Passive, Patrol, Defend, Aggressive }
 
-public class EnemyAI : MonoBehaviour
+public class UnitAI : MonoBehaviour
 {
     [Header("Поведение")]
     public AIBehavior currentBehavior = AIBehavior.Defend;
@@ -21,19 +21,25 @@ public class EnemyAI : MonoBehaviour
     public Transform firePoint;
     private float nextAttackTime;
 
+    [HideInInspector] public bool isManualControl = false; 
+
     private NavMeshAgent agent;
-    private Health targetPlayer;
+    private Health targetEnemy;
     private Vector3 startPosition;
     private float patrolTimer;
+    private Health myHealth;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        myHealth = GetComponent<Health>();
         startPosition = transform.position;
     }
 
     void Update()
     {
+        if (isManualControl) return; 
+
         switch (currentBehavior)
         {
             case AIBehavior.Passive:
@@ -53,20 +59,20 @@ public class EnemyAI : MonoBehaviour
 
     void DefendLogic()
     {
-        FindClosestPlayer();
+        FindClosestEnemy();
 
-        if (targetPlayer != null)
+        if (targetEnemy != null)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
+            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.transform.position);
             float distanceFromBase = Vector3.Distance(startPosition, transform.position);
 
-            if (distanceToPlayer <= aggroRadius && distanceFromBase <= maxChaseDistance)
+            if (distanceToEnemy <= aggroRadius && distanceFromBase <= maxChaseDistance)
             {
-                AttackPlayer(distanceToPlayer);
+                AttackEnemy(distanceToEnemy);
             }
             else
             {
-                targetPlayer = null; 
+                targetEnemy = null; 
                 agent.isStopped = false;
                 agent.SetDestination(startPosition);
             }
@@ -103,67 +109,79 @@ public class EnemyAI : MonoBehaviour
 
     void AggressiveLogic()
     {
-        FindClosestPlayer();
-        if (targetPlayer != null)
+        FindClosestEnemy();
+        if (targetEnemy != null)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
-            AttackPlayer(distanceToPlayer);
+            float distanceToEnemy = Vector3.Distance(transform.position, targetEnemy.transform.position);
+            AttackEnemy(distanceToEnemy);
         }
         else PatrolLogic();
     }
 
-    void AttackPlayer(float distance)
+    void AttackEnemy(float distance)
     {
         if (distance <= attackRange)
         {
-            agent.isStopped = true; 
-            
-            if (Time.time >= nextAttackTime)
+            if (!agent.isStopped)
             {
-                EnemyShoot();
-                nextAttackTime = Time.time + attackSpeed;
+                agent.isStopped = true;
+                if (agent.hasPath) agent.ResetPath();
+                agent.velocity = Vector3.zero;
             }
+
+            Vector3 lookDir = targetEnemy.transform.position - transform.position;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+            }
+            
+            PerformAttack(targetEnemy); 
         }
         else
         {
             agent.isStopped = false; 
-            agent.SetDestination(targetPlayer.transform.position);
+            agent.SetDestination(targetEnemy.transform.position);
         }
     }
 
-    void EnemyShoot()
+    public void PerformAttack(Health target)
     {
-        if (targetPlayer == null || bulletPrefab == null || firePoint == null) return;
-
-        Vector3 lookDir = targetPlayer.transform.position - transform.position;
-        lookDir.y = 0;
-        transform.rotation = Quaternion.LookRotation(lookDir);
-
-        GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        Projectile projectile = bulletObj.GetComponent<Projectile>();
-
-        if (projectile != null)
+        if (Time.time >= nextAttackTime)
         {
-            Fraction myFraction = GetComponent<Health>().unitFraction;
-            projectile.Setup(targetPlayer, attackDamage, myFraction);
+            if (target == null || bulletPrefab == null || firePoint == null) return;
+
+            GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            Projectile projectile = bulletObj.GetComponent<Projectile>();
+
+            if (projectile != null)
+            {
+                Fraction myFraction = myHealth.unitFraction;
+                projectile.Setup(target, attackDamage, myFraction);
+            }
+            nextAttackTime = Time.time + attackSpeed; 
         }
     }
 
-    void FindClosestPlayer()
+    void FindClosestEnemy()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Health[] allUnits = FindObjectsByType<Health>(FindObjectsInactive.Exclude);
         float closestDistance = Mathf.Infinity;
-        Health closestEnemy = null;
+        Health closestTarget = null;
 
-        foreach (GameObject p in players)
+        foreach (Health unit in allUnits)
         {
-            float distance = Vector3.Distance(transform.position, p.transform.position);
+            if (unit.teamID == myHealth.teamID) continue; 
+            
+            if (unit == null || unit.gameObject == null) continue;
+
+            float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                closestEnemy = p.GetComponent<Health>();
+                closestTarget = unit;
             }
         }
-        targetPlayer = closestEnemy;
+        targetEnemy = closestTarget;
     }
 }

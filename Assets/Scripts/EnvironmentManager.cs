@@ -204,7 +204,7 @@ public class EnvironmentManager : MonoBehaviour
         }
 
         RenderSettings.fog = true;
-        RenderSettings.fogColor = targetColor * 0.5f; // Туман чуть темнее неба
+        RenderSettings.fogColor = targetColor * 0.5f;
         RenderSettings.fogDensity = fogDensity;
 
         RenderSettings.ambientLight = targetColor * 0.2f;

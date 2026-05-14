@@ -1,23 +1,16 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class UnitMover : MonoBehaviour
+public class UnitController : MonoBehaviour
 {
     private NavMeshAgent agent;
-    private Health targetEnemy;
     private Renderer unitRenderer;
     private Color originalColor;
+    private Health targetEnemy;
+    private UnitAI autoPilot;
     private UnitInventory inventory;
     private ResourceSource targetResource;
     private float gatherTimer;
-
-    [Header("Combat Settings")]
-    public float attackRange = 10f;
-    public float attackDamage = 10f;
-    public float attackSpeed = 1f;
-    private float nextAttackTime;
-    public GameObject bulletPrefab;
-    public Transform firePoint;
 
     [Header("Gathering Settings")]
     public float gatherRange = 2.5f;
@@ -30,6 +23,7 @@ public class UnitMover : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         unitRenderer = GetComponent<Renderer>();
+        autoPilot = GetComponent<UnitAI>();
         inventory = GetComponent<UnitInventory>();
 
         if (unitRenderer != null)
@@ -47,12 +41,14 @@ public class UnitMover : MonoBehaviour
                 targetEnemy = null;
                 if (agent.hasPath) agent.ResetPath();
                 agent.isStopped = true; 
+                
+                if (autoPilot != null) autoPilot.isManualControl = false;
                 return;
             }
 
             float distance = Vector3.Distance(transform.position, targetEnemy.transform.position);
 
-            if (distance <= attackRange)
+            if (distance <= autoPilot.attackRange)
             {
                 if (!agent.isStopped)
                 {
@@ -68,13 +64,9 @@ public class UnitMover : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
                 }
 
-                if (Time.time >= nextAttackTime)
-                {
-                    Shoot();
-                    nextAttackTime = Time.time + attackSpeed;
-                }
+                autoPilot.PerformAttack(targetEnemy);
             }
-            else if (distance > attackRange + 0.1f) 
+            else if (distance > autoPilot.attackRange + 0.1f) 
             {
                 agent.isStopped = false;
                 agent.SetDestination(targetEnemy.transform.position);
@@ -91,10 +83,12 @@ public class UnitMover : MonoBehaviour
         if (inventory != null && inventory.IsFull)
         {
             targetResource = null;
+            if (autoPilot != null) autoPilot.isManualControl = false;
             return;
         }
 
         float distance = Vector3.Distance(transform.position, targetResource.transform.position);
+
         if (distance <= gatherRange)
         {
             agent.isStopped = true;
@@ -127,6 +121,8 @@ public class UnitMover : MonoBehaviour
 
     public void MoveTo(Vector3 point)
     {
+        if (autoPilot != null) autoPilot.isManualControl = true;
+        
         targetEnemy = null;
         targetResource = null;
         agent.isStopped = false;
@@ -135,28 +131,18 @@ public class UnitMover : MonoBehaviour
 
     public void SetTarget(Health enemy)
     {
+        if (autoPilot != null) autoPilot.isManualControl = true;
+
         targetResource = null;
         targetEnemy = enemy;
     }
 
     public void SetResourceTarget(ResourceSource resource)
     {
+        if (autoPilot != null) autoPilot.isManualControl = true;
+        
         targetEnemy = null;
         targetResource = resource;
         agent.SetDestination(resource.transform.position);
-    }
-
-    void Shoot()
-    {
-        if (targetEnemy == null || bulletPrefab == null || firePoint == null) return;
-
-        GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        Projectile projectile = bulletObj.GetComponent<Projectile>();
-
-        if (projectile != null)
-        {
-            Fraction myFraction = GetComponent<Health>().unitFraction;
-            projectile.Setup(targetEnemy, attackDamage, myFraction);
-        }
     }
 }

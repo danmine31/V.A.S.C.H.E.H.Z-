@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class ResourceGatherer : MonoBehaviour
 {
-    private UnitMover mover;
+    private UnitController controller;
     private UnitInventory inventory;
     private ResourceSource targetResource;
     private float timer;
 
     void Start()
     {
-        mover = GetComponent<UnitMover>();
+        controller = GetComponent<UnitController>();
         inventory = GetComponent<UnitInventory>();
     }
 
     public void SetResourceTarget(ResourceSource resource)
     {
         targetResource = resource;
-        mover.MoveTo(resource.transform.position);
+        controller.MoveTo(resource.transform.position);
     }
 
     void Update()

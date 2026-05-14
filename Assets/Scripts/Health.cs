@@ -5,6 +5,7 @@ public enum Fraction { People, Mages, Robots }
 public class Health : MonoBehaviour
 {
     public Fraction unitFraction;
+    public int teamID = 0;
     public float maxHealth = 100f;
     public float currentHealth;
     public HealthBar healthBar;

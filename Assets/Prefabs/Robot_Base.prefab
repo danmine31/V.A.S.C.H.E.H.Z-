@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 3749536075296331188}
   - component: {fileID: 5144260302819219487}
   - component: {fileID: 1288709080322751721}
-  - component: {fileID: 4673921159088589987}
   - component: {fileID: 9198008379798283744}
+  - component: {fileID: 4673921159088589987}
+  - component: {fileID: -6598210460691674266}
   m_Layer: 6
-  m_Name: Robot prototype
+  m_Name: Robot_Base
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,23 +116,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4673921159088589987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1399708781487340977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70ef3438d9246a245890c087a336e9aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  unitFraction: 2
-  maxHealth: 1000
-  currentHealth: 1000
-  healthBar: {fileID: 0}
-  healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
 --- !u!195 &9198008379798283744
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -154,6 +138,38 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &4673921159088589987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399708781487340977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70ef3438d9246a245890c087a336e9aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  unitFraction: 2
+  maxHealth: 1000
+  currentHealth: 1000
+  healthBar: {fileID: 0}
+  healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
+--- !u!114 &-6598210460691674266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399708781487340977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
+  capacity: 20
+  currentType: 0
+  currentAmount: 0
 --- !u!1 &9117931455432432220
 GameObject:
   m_ObjectHideFlags: 0
