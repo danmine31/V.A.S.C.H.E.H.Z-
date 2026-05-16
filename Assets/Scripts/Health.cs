@@ -16,7 +16,7 @@ public class Health : MonoBehaviour
         currentHealth = maxHealth;
         if (healthBarPrefab != null)
         {
-            GameObject hbObj = Instantiate(healthBarPrefab);
+            GameObject hbObj = Instantiate(healthBarPrefab, this.transform);
             healthBar = hbObj.GetComponent<HealthBar>();
             if (healthBar != null)
             {

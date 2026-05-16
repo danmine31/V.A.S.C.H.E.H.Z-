@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 7930231340913124385}
   - component: {fileID: 7881527908754456296}
   - component: {fileID: 8498024872369777648}
-  - component: {fileID: -3210536365689470209}
-  m_Layer: 0
+  - component: {fileID: -3760913032145532632}
+  m_Layer: 6
   m_Name: Mag_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,11 +429,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   unitFraction: 1
+  teamID: 0
   maxHealth: 67
   currentHealth: 67
   healthBar: {fileID: 0}
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
---- !u!114 &-3210536365689470209
+--- !u!114 &-3760913032145532632
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -442,12 +443,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 419385204864616563}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d432cca5b900c547b18233e13556558, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
-  capacity: 20
-  currentType: 0
-  currentAmount: 0
+  m_EditorClassIdentifier: Assembly-CSharp::UnitAI
+  currentBehavior: 2
+  attackRange: 10
+  aggroRadius: 15
+  maxChaseDistance: 25
+  patrolRadius: 10
+  attackDamage: 10
+  attackSpeed: 1
+  bulletPrefab: {fileID: 6014821155850210489, guid: 0c880a1b30a74aa4ba194db717a1ecf3, type: 3}
+  firePoint: {fileID: 7032690022493177141}
+  isManualControl: 0
 --- !u!1 &6808034716423031525
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,7 +465,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7032690022493177141}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

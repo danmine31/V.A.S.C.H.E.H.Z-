@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7051638977744399283
+--- !u!1001 &1793574873892696671
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,15 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: m_Name
-      value: Mag_Player
+      value: Mag_AI
       objectReference: {fileID: 0}
     - target: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
+    - target: {fileID: 626582926108871036, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2246965066631712852, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3833904868844252136, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -68,41 +72,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 8498024872369777648, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      propertyPath: teamID
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7400673754663873794}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
---- !u!4 &19516445459426950 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7032690022493177141, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
-  m_PrefabInstance: {fileID: 7051638977744399283}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7209560231624467392 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
-  m_PrefabInstance: {fileID: 7051638977744399283}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7400673754663873794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7209560231624467392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e96fa69e68b1045856cac7a0938d5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitMover
-  attackRange: 10
-  attackDamage: 10
-  attackSpeed: 1
-  bulletPrefab: {fileID: 6014821155850210489, guid: 0c880a1b30a74aa4ba194db717a1ecf3, type: 3}
-  firePoint: {fileID: 19516445459426950}
-  gatherRange: 2.5
-  gatherCooldown: 1.5
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}

@@ -14,11 +14,10 @@ GameObject:
   - component: {fileID: 4429577054505522934}
   - component: {fileID: 8291195231970629218}
   - component: {fileID: 216492478357597687}
-  - component: {fileID: -9093132376275141146}
-  - component: {fileID: -3985606879613819133}
+  - component: {fileID: -8435829558281509865}
   m_Layer: 6
   m_Name: Soldier_Base
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -159,7 +158,7 @@ MonoBehaviour:
   currentHealth: 200
   healthBar: {fileID: 0}
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
---- !u!114 &-9093132376275141146
+--- !u!114 &-8435829558281509865
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,24 +167,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1357777502235203779}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d432cca5b900c547b18233e13556558, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
-  capacity: 20
-  currentType: 0
-  currentAmount: 0
---- !u!114 &-3985606879613819133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1357777502235203779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f25ab4d3645c5ef46b4a5c422a4636e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ResourceGatherer
+  m_EditorClassIdentifier: Assembly-CSharp::UnitAI
+  currentBehavior: 2
+  attackRange: 10
+  aggroRadius: 15
+  maxChaseDistance: 25
+  patrolRadius: 10
+  attackDamage: 10
+  attackSpeed: 1
+  bulletPrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+  isManualControl: 0
 --- !u!1 &6041199604075924308
 GameObject:
   m_ObjectHideFlags: 0
