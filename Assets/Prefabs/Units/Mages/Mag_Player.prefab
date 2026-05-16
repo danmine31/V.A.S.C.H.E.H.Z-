@@ -24,10 +24,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2246965066631712852, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3833904868844252136, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -95,6 +91,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7400673754663873794}
+    - targetCorrespondingSourceObject: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1326875597920052689}
+    - targetCorrespondingSourceObject: {fileID: 419385204864616563, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8013210530462433993}
   m_SourcePrefab: {fileID: 100100000, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
 --- !u!1 &7209560231624467392 stripped
 GameObject:
@@ -116,3 +118,30 @@ MonoBehaviour:
   gatherRange: 2.5
   gatherCooldown: 1.5
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &1326875597920052689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7209560231624467392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
+  maxSlots: 6
+  maxStackSize: 44
+  slots: []
+--- !u!114 &8013210530462433993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7209560231624467392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f25ab4d3645c5ef46b4a5c422a4636e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceGatherer

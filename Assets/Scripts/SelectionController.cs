@@ -190,5 +190,14 @@ public class SelectionController : MonoBehaviour
             vis.ToggleRadiuses(visible);
         }
     }
+
+    public UnitController GetMainSelectedUnit()
+    {
+        if (selectedUnits.Count > 0)
+        {
+            return selectedUnits[0];
+        }
+        return null;
+    }
 }
 

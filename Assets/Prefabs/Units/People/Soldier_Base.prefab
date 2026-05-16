@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitAI
   currentBehavior: 2
+  canAttack: 1
   attackRange: 10
   aggroRadius: 15
   maxChaseDistance: 25

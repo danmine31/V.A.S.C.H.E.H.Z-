@@ -1,7 +1,7 @@
 using UnityEngine;
-public class MenuCameraRotate : MonoBehaviour
+public class MainMenuCameraRotate : MonoBehaviour
 {
-    public float speed = 2f;
+    public float speed = 2.5f;
     void Update()
     {
         transform.Rotate(0, speed * Time.deltaTime, 0);

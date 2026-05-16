@@ -110,9 +110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2831030da4f12df4cbddfc65037f9b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitInventory
-  capacity: 20
-  currentType: 0
-  currentAmount: 0
+  maxSlots: 6
+  maxStackSize: 44
+  slots: []
 --- !u!114 &7918210823943589669
 MonoBehaviour:
   m_ObjectHideFlags: 0

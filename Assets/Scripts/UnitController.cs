@@ -142,6 +142,13 @@ public class UnitController : MonoBehaviour
 
     public void SetTarget(Health enemy)
     {
+        UnitAI ai = GetComponent<UnitAI>();
+        if (ai != null && !ai.canAttack)
+        {
+            Debug.LogWarning($"[{gameObject.name}]: Я -- работяга, атаковать не могу!");
+            return;
+        }
+
         if (autoPilot != null) autoPilot.isManualControl = true;
 
         targetResource = null;

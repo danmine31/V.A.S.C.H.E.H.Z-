@@ -7,6 +7,7 @@ public class UnitAI : MonoBehaviour
 {
     [Header("Поведение")]
     public AIBehavior currentBehavior = AIBehavior.Defend;
+    public bool canAttack = true;
     
     [Header("Настройки радиусов")]
     public float attackRange = 10f;
@@ -45,6 +46,8 @@ public class UnitAI : MonoBehaviour
     void Update()
     {
         if (isManualControl) return; 
+
+        if (!canAttack) return;
 
         switch (currentBehavior)
         {

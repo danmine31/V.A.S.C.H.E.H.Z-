@@ -3,7 +3,7 @@ using UnityEngine;
 public class ResourceSource : MonoBehaviour
 {
     [Header("Resource Settings")]
-    public ResourceType type;
+    public ItemType type;
     public int amountRemaining = 100;
     public float gatherTime = 1.5f;
     public int Gather(int amount)
