@@ -24,19 +24,15 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (playlist.Count > 0 && !audioSource.isPlaying)
-        {
-            NextTrack();
-        }
-    }
-
     void PlayTrack(int index)
     {
+        CancelInvoke(nameof(NextTrack));
+
         audioSource.clip = playlist[index];
         audioSource.Play();
         Debug.Log($"Сейчас играет трек: {playlist[index].name}");
+
+        Invoke(nameof(NextTrack), playlist[index].length);
     }
 
     void NextTrack()

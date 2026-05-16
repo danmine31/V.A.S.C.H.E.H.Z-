@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7930231340913124385, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8498024872369777648, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: teamID
       value: 0
