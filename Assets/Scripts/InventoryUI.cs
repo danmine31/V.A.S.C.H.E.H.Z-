@@ -6,6 +6,14 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryPanel;
 
     private bool isInventoryOpen = false;
+    private SelectionController selectionCtrl;
+
+    void Start()
+    {
+        selectionCtrl = FindFirstObjectByType<SelectionController>();
+        
+        if (inventoryPanel != null) inventoryPanel.SetActive(false);
+    }
 
     void Update()
     {
@@ -28,6 +36,26 @@ public class InventoryUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        Debug.Log("Инвентарь открыт! Отрисовка UI...");
+        if (selectionCtrl == null) return;
+
+        UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
+
+        if (activeUnit != null)
+        {
+            UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
+            if (inv != null)
+            {
+                Debug.Log($"<color=green>Открыт рюкзак юнита: {activeUnit.gameObject.name}</color>");
+                Debug.Log($"Занято слотов: {inv.slots.Count} из {inv.maxSlots}");
+            }
+            else
+            {
+                Debug.LogWarning("У этого юнита нет скрипта UnitInventory!");
+            }
+        }
+        else
+        {
+            Debug.Log("Нет выделенного юнита! Инвентарь пуст.");
+        }
     }
 }

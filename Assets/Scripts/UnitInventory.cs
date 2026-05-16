@@ -43,4 +43,23 @@ public class UnitInventory : MonoBehaviour
             Debug.LogWarning("Инвентарь переполнен! Некуда класть " + type);
         }
     }
+
+    public int GetItemCount(ItemType type)
+    {
+        int total = 0;
+        foreach (var slot in slots)
+        {
+            if (slot.itemType == type) total += slot.amount;
+        }
+        return total;
+    }
+
+    public bool CanAcceptItem(ItemType type)
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.itemType == type && slot.amount < maxStackSize) return true;
+        }
+        return slots.Count < maxSlots;
+    }
 }
