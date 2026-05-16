@@ -719,7 +719,7 @@ PrefabInstance:
       objectReference: {fileID: 189168728}
     - target: {fileID: 9147556968054619111, guid: b4033abd96eabdc4d8f39f8f26fc4230, type: 3}
       propertyPath: m_VersionIndex
-      value: 4966
+      value: 4972
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1123,6 +1123,7 @@ MonoBehaviour:
   pitchUpKey: 114
   pitchDownKey: 102
   fastMoveKey: 304
+  mouseSensitivity: 3
 --- !u!1001 &474456776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1343,7 +1344,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3423017646897253468, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_Name
-      value: Unit_Spawner (1)
+      value: AllyUnit_Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: teamID
@@ -1358,9 +1359,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1244847326}
     - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: unitPrefab
+      value: 
+      objectReference: {fileID: 19150453965745288, guid: 9fdb0783ee67cad48a38537f9d84e91f, type: 3}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: teamMaterial
       value: 
       objectReference: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: spawnBehavior
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.3
@@ -1693,7 +1702,7 @@ PrefabInstance:
       objectReference: {fileID: 83468328}
     - target: {fileID: 2246965066631712852, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: m_VersionIndex
-      value: 5041
+      value: 5047
       objectReference: {fileID: 0}
     - target: {fileID: 3833904868844252136, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -2413,7 +2422,7 @@ PrefabInstance:
       objectReference: {fileID: 438324264}
     - target: {fileID: 561503043082461707, guid: 9a31c4bb98a6a3c43a852024372657e6, type: 3}
       propertyPath: m_VersionIndex
-      value: 5032
+      value: 5038
       objectReference: {fileID: 0}
     - target: {fileID: 1177162444602866467, guid: 9a31c4bb98a6a3c43a852024372657e6, type: 3}
       propertyPath: m_Mesh
@@ -3199,7 +3208,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3423017646897253468, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_Name
-      value: Unit_Spawner
+      value: EnemyUnit_Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: teamID
@@ -3214,12 +3223,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1244847326}
     - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: unitPrefab
+      value: 
+      objectReference: {fileID: 19150453965745288, guid: 9fdb0783ee67cad48a38537f9d84e91f, type: 3}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: teamMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: spawnBehavior
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.35944
+      value: 40.2
       objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3227,7 +3244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -85.91934
+      value: -98.44
       objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalRotation.w
