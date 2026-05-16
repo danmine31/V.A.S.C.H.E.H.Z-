@@ -31,7 +31,7 @@ PrefabInstance:
     - target: {fileID: 3833904868844252136, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+      objectReference: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
     - target: {fileID: 4613913762495310331, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -78,6 +78,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8498024872369777648, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
       propertyPath: teamID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498024872369777648, guid: bd5d155bc3a2f17428c22faef495a427, type: 3}
+      propertyPath: colorID
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

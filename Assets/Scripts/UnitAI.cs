@@ -43,7 +43,7 @@ public class UnitAI : MonoBehaviour
         switch (currentBehavior)
         {
             case AIBehavior.Passive:
-                agent.isStopped = true;
+                if (agent.isOnNavMesh) agent.isStopped = true;
                 break;
             case AIBehavior.Patrol:
                 PatrolLogic();
@@ -73,23 +73,29 @@ public class UnitAI : MonoBehaviour
             else
             {
                 targetEnemy = null; 
-                agent.isStopped = false;
-                agent.SetDestination(startPosition);
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = false;
+                    agent.SetDestination(startPosition);
+                }
             }
         }
         else
         {
             if (Vector3.Distance(transform.position, startPosition) > 1f)
             {
-                agent.isStopped = false;
-                agent.SetDestination(startPosition);
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = false;
+                    agent.SetDestination(startPosition);
+                }
             }
         }
     }
 
     void PatrolLogic()
     {
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        if (agent.isOnNavMesh && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
             patrolTimer += Time.deltaTime;
             if (patrolTimer > 2f)
@@ -122,7 +128,7 @@ public class UnitAI : MonoBehaviour
     {
         if (distance <= attackRange)
         {
-            if (!agent.isStopped)
+            if (agent.isOnNavMesh && !agent.isStopped)
             {
                 agent.isStopped = true;
                 if (agent.hasPath) agent.ResetPath();
@@ -140,16 +146,21 @@ public class UnitAI : MonoBehaviour
         }
         else
         {
-            agent.isStopped = false; 
-            agent.SetDestination(targetEnemy.transform.position);
+            if (agent.isOnNavMesh)
+            {
+                agent.isStopped = false; 
+                agent.SetDestination(targetEnemy.transform.position);
+            }
         }
     }
 
     public void PerformAttack(Health target)
     {
+        if (target == null) return;
+
         if (Time.time >= nextAttackTime)
         {
-            if (target == null || bulletPrefab == null || firePoint == null) return;
+            if (bulletPrefab == null || firePoint == null) return;
 
             GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             Projectile projectile = bulletObj.GetComponent<Projectile>();
@@ -171,9 +182,10 @@ public class UnitAI : MonoBehaviour
 
         foreach (Health unit in allUnits)
         {
-            if (unit.teamID == myHealth.teamID) continue; 
-            
-            if (unit == null || unit.gameObject == null) continue;
+            if (unit == null) continue; 
+
+            if (unit == myHealth || unit.teamID == myHealth.teamID || unit.teamID == 0 || myHealth.teamID == 0) 
+                continue;
 
             float distance = Vector3.Distance(transform.position, unit.transform.position);
             if (distance < closestDistance)
@@ -183,5 +195,10 @@ public class UnitAI : MonoBehaviour
             }
         }
         targetEnemy = closestTarget;
+    }
+
+    public void SetBasePosition(Vector3 newPos)
+    {
+        startPosition = newPos;
     }
 }

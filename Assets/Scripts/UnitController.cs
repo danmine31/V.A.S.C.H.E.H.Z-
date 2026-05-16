@@ -76,6 +76,17 @@ public class UnitController : MonoBehaviour
         {
             HandleResourceGathering();
         }
+        else 
+        {
+            if (autoPilot != null && autoPilot.isManualControl)
+            {
+                if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    autoPilot.isManualControl = false;
+                    autoPilot.SetBasePosition(transform.position);
+                }
+            }
+        }
     }
 
     void HandleResourceGathering()

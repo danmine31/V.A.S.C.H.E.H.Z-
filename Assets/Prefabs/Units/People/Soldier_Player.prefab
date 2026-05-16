@@ -12,10 +12,18 @@ PrefabInstance:
       propertyPath: teamID
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 216492478357597687, guid: 406e8751c5246e346b99f250cdefa0b7, type: 3}
+      propertyPath: colorID
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1357777502235203779, guid: 406e8751c5246e346b99f250cdefa0b7, type: 3}
       propertyPath: m_Name
       value: Soldier_Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1721618089050330112, guid: 406e8751c5246e346b99f250cdefa0b7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
     - target: {fileID: 7521470928178819155, guid: 406e8751c5246e346b99f250cdefa0b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

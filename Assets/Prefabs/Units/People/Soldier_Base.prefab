@@ -71,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -154,10 +154,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   unitFraction: 0
   teamID: 0
+  colorID: 0
   maxHealth: 200
   currentHealth: 200
-  healthBar: {fileID: 0}
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
+  healthBar: {fileID: 0}
+  neutralMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
+  playerMaterial: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
+  enemyMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
+  allyMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
 --- !u!114 &-8435829558281509865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,8 +182,8 @@ MonoBehaviour:
   patrolRadius: 10
   attackDamage: 10
   attackSpeed: 1
-  bulletPrefab: {fileID: 0}
-  firePoint: {fileID: 0}
+  bulletPrefab: {fileID: 6014821155850210489, guid: 0c880a1b30a74aa4ba194db717a1ecf3, type: 3}
+  firePoint: {fileID: 3512469186899213038}
   isManualControl: 0
 --- !u!1 &6041199604075924308
 GameObject:

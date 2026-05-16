@@ -6,14 +6,22 @@ public class Health : MonoBehaviour
 {
     public Fraction unitFraction;
     public int teamID = 0;
+    public int colorID = 0;
     public float maxHealth = 100f;
     public float currentHealth;
-    public HealthBar healthBar;
     public GameObject healthBarPrefab;
+    [HideInInspector] public HealthBar healthBar;
+
+    [Header("Цвета команд")]
+    public Material neutralMaterial;
+    public Material playerMaterial;
+    public Material enemyMaterial;
+    public Material allyMaterial;
 
     void Start()
     {
         currentHealth = maxHealth;
+
         if (healthBarPrefab != null)
         {
             GameObject hbObj = Instantiate(healthBarPrefab, this.transform);
@@ -23,6 +31,37 @@ public class Health : MonoBehaviour
                 healthBar.target = this.transform;
                 healthBar.UpdateHealthBar(currentHealth, maxHealth);
             }
+        }
+
+        ApplyTeamColor();
+    }
+
+    #if UNITY_EDITOR 
+        private void OnValidate()
+        {
+            if (!Application.isPlaying) 
+            {
+                ApplyTeamColor();
+            }
+        }
+    #endif
+
+    void ApplyTeamColor()
+    {
+        Renderer rend = GetComponentInChildren<Renderer>();
+        if (rend != null)
+        {
+            if (colorID == 0 && neutralMaterial != null) 
+                rend.material = neutralMaterial; 
+                
+            else if (colorID == 1 && playerMaterial != null) 
+                rend.material = playerMaterial;
+                
+            else if (colorID == 2 && enemyMaterial != null) 
+                rend.material = enemyMaterial;
+                
+            else if (colorID == 3 && allyMaterial != null) 
+                rend.material = allyMaterial;
         }
     }
 
