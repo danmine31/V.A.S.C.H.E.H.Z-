@@ -34,6 +34,12 @@ public class UnitAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
         startPosition = transform.position;
+        RadiusVisualizer visualizer = GetComponent<RadiusVisualizer>();
+        if (visualizer != null)
+        {
+            visualizer.AddRadius(aggroRadius, new Color(1f, 0.5f, 0f, 0.6f), "AggroCircle");
+            visualizer.AddRadius(attackRange, new Color(1f, 0f, 0f, 0.8f), "AttackCircle");
+        }
     }
 
     void Update()

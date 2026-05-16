@@ -5,12 +5,15 @@ public class UnitSpawner : MonoBehaviour
     [Header("Настройки шаблона")]
     public GameObject unitPrefab;
     public Transform container;
+
+    [Header("Настройки ИИ")]
+    public AIBehavior spawnBehavior = AIBehavior.Defend;
     
     [Header("Командные настройки")]
     public int teamID = 0;
     public int colorID = 0;
     public Material teamMaterial;
-    
+
     [Header("Параметры спавна")]
     public float spawnCooldown = 15f;
     
@@ -46,6 +49,12 @@ public class UnitSpawner : MonoBehaviour
         if (renderer != null && teamMaterial != null)
         {
             renderer.material = teamMaterial;
+        }
+
+        UnitAI ai = newUnit.GetComponent<UnitAI>();
+        if (ai != null)
+        {
+            ai.currentBehavior = spawnBehavior;
         }
         
         newUnit.layer = LayerMask.NameToLayer("Unit");

@@ -11,6 +11,7 @@ public class SelectionController : MonoBehaviour
     private List<UnitController> selectedUnits = new List<UnitController>();
     private Vector2 startMousePos;
     private bool isBoxSelecting = false;
+    public static bool isRadiusesVisible = false;
 
     void Update()
     {
@@ -36,16 +37,23 @@ public class SelectionController : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            isRadiusesVisible = true;
+            SetAllRadiusesVisible(true);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            isRadiusesVisible = false;
+            SetAllRadiusesVisible(false);
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
-            if (isBoxSelecting)
-            {
-                SelectUnitsInBox();
-            }
-            else
-            {
-                SelectSingleUnit();
-            }
+            if (isBoxSelecting) SelectUnitsInBox();
+            else SelectSingleUnit();
+            
             if (selectionBoxVisual != null) selectionBoxVisual.gameObject.SetActive(false);
             isBoxSelecting = false;
         }
@@ -171,6 +179,15 @@ public class SelectionController : MonoBehaviour
                 unit.MoveTo(hit.point);
                 Debug.Log("Приказ: идти в точку " + hit.point);
             }
+        }
+    }
+
+    void SetAllRadiusesVisible(bool visible)
+    {
+        RadiusVisualizer[] visualizers = FindObjectsByType<RadiusVisualizer>(FindObjectsInactive.Exclude);
+        foreach (var vis in visualizers)
+        {
+            vis.ToggleRadiuses(visible);
         }
     }
 }

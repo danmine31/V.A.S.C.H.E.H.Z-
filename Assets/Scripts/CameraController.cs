@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MyCamera : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 80f;
@@ -19,6 +19,9 @@ public class MyCamera : MonoBehaviour
     public KeyCode pitchUpKey = KeyCode.R;
     public KeyCode pitchDownKey = KeyCode.F;
     public KeyCode fastMoveKey = KeyCode.LeftShift;
+
+    [Header("Настройки мыши")]
+    public float mouseSensitivity = 5f;
 
     private float currentPitch = 0f;
     private float currentYaw;
@@ -47,8 +50,18 @@ public class MyCamera : MonoBehaviour
         if (Input.GetKey(pitchUpKey)) currentPitch -= pitchSpeed * Time.deltaTime;
         if (Input.GetKey(pitchDownKey)) currentPitch += pitchSpeed * Time.deltaTime;
 
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+            currentYaw += mouseX;
+            currentPitch -= mouseY; 
+        }
+
         currentPitch = Mathf.Clamp(currentPitch, minPitchAngle, maxPitchAngle);
         transform.rotation = Quaternion.Euler(currentPitch, currentYaw, 0f);
+        
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         transform.position += transform.forward * scroll * zoomSpeed;
     }
