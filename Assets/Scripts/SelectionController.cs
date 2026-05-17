@@ -77,6 +77,8 @@ public class SelectionController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            
             MoveOrAttack();
         }
     }

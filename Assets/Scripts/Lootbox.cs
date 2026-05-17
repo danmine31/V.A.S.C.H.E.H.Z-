@@ -17,6 +17,10 @@ public class LootBox : MonoBehaviour
     public LootBoxType boxType = LootBoxType.Dropped;
     public float lifeTime = 300f;
 
+    [Header("Настройки вместимости ящика")]
+    public int maxSlots = 15;
+    public int maxStackSize = 67;
+
     [Header("Содержимое сундука")]
     public List<LootItem> boxContents = new List<LootItem>();
 
@@ -29,7 +33,6 @@ public class LootBox : MonoBehaviour
             Destroy(gameObject, lifeTime);
             if (col != null) col.isTrigger = true; 
         }
-
         else if (boxType == LootBoxType.Chest)
         {
             if (col != null) col.isTrigger = false;
@@ -44,7 +47,6 @@ public class LootBox : MonoBehaviour
     private IEnumerator WaitForSquadCoroutine(List<UnitController> squad)
     {
         if (squad == null || squad.Count == 0) yield break;
-
         UnitController leader = squad[0];
 
         while (leader != null && Vector3.Distance(leader.transform.position, transform.position) > 3f)
@@ -52,28 +54,59 @@ public class LootBox : MonoBehaviour
             yield return null;
         }
 
-        OpenBox(squad);
+        OpenLootUI(squad);
     }
 
-    public void OpenBox(List<UnitController> squad)
+    private void OpenLootUI(List<UnitController> squad)
     {
-        if (boxContents.Count == 0) return;
-
-        Debug.Log($"<color=cyan>[{gameObject.name}]: Отряд вскрывает лут! Начинаем распределение...</color>");
-
-        for (int i = boxContents.Count - 1; i >= 0; i--)
+        LootUI ui = FindObjectOfType<LootUI>();
+        if (ui != null)
         {
-            LootItem loot = boxContents[i];
-            LootDistributor.DistributeAmongSquad(squad, loot.itemType, loot.amount);
-            boxContents.RemoveAt(i);
+            ui.OpenLoot(this);
         }
 
-        InventoryUI ui = FindFirstObjectByType<InventoryUI>();
-        if (ui != null && ui.inventoryPanel.activeInHierarchy)
+        Debug.Log($"<color=yellow>[{gameObject.name}]: Открыто окно сундука! Ждем действий игрока...</color>");
+    }
+
+    public void AddItem(ItemType type, int amount)
+    {
+        foreach (var loot in boxContents)
         {
-            ui.UpdateUI();
+            if (loot.itemType == type && loot.amount < maxStackSize)
+            {
+                int spaceLeft = maxStackSize - loot.amount;
+                int toAdd = Mathf.Min(amount, spaceLeft);
+                loot.amount += toAdd;
+                amount -= toAdd;
+                if (amount <= 0) return;
+            }
         }
 
-        Destroy(gameObject, 0.5f);
+        if (boxContents.Count < maxSlots && amount > 0)
+        {
+            boxContents.Add(new LootItem { itemType = type, amount = amount });
+        }
+    }
+
+    public void CheckEmptyState()
+    {
+        if (boxContents.Count == 0)
+        {
+            if (boxType == LootBoxType.Dropped)
+            {
+                LootUI ui = FindObjectOfType<LootUI>();
+                if (ui != null && ui.CurrentLootBox == this && ui.lootPanel.activeInHierarchy)
+                {
+                    return; 
+                }
+
+                Debug.Log("Трупный лут полностью собран и окно закрыто. Уничтожаем объект.");
+                Destroy(gameObject);
+            }
+            else if (boxType == LootBoxType.Chest)
+            {
+                Debug.Log("Сюжетный сундук опустел, но остается стоять на карте.");
+            }
+        }
     }
 }

@@ -20,7 +20,8 @@ public class InventoryUI : MonoBehaviour
     [Header("База иконок")]
     public List<ItemIcon> itemDatabase;
 
-    private bool isInventoryOpen = false;
+    public bool IsInventoryOpen { get; private set; }
+
     private SelectionController selectionCtrl;
     private UnitController lastSelectedUnit;
 
@@ -28,6 +29,7 @@ public class InventoryUI : MonoBehaviour
     {
         selectionCtrl = FindObjectOfType<SelectionController>();
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
+        IsInventoryOpen = false;
     }
 
     void Update()
@@ -37,15 +39,13 @@ public class InventoryUI : MonoBehaviour
             ToggleInventory();
         }
 
-        if (isInventoryOpen)
+        if (IsInventoryOpen)
         {
             UnitController currentUnit = selectionCtrl != null ? selectionCtrl.GetMainSelectedUnit() : null;
 
             if (currentUnit == null)
             {
-                isInventoryOpen = false;
-                inventoryPanel.SetActive(false);
-                lastSelectedUnit = null;
+                CloseInventory();
                 return;
             }
 
@@ -56,18 +56,43 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void ToggleInventory()
+    public void ToggleInventory()
     {
-        if (selectionCtrl != null && selectionCtrl.GetMainSelectedUnit() == null)
+        if (IsInventoryOpen)
         {
-            Debug.LogWarning("Сначала выделите юнита!");
-            return; 
+            CloseInventory();
         }
+        else
+        {
+            if (selectionCtrl != null && selectionCtrl.GetMainSelectedUnit() == null)
+            {
+                Debug.LogWarning("Сначала выделите юнита!");
+                return; 
+            }
+            OpenInventory();
+        }
+    }
 
-        isInventoryOpen = !isInventoryOpen;
-        inventoryPanel.SetActive(isInventoryOpen);
+    public void OpenInventory()
+    {
+        if (IsInventoryOpen) return;
+        IsInventoryOpen = true;
+        if (inventoryPanel != null) inventoryPanel.SetActive(true);
+        UpdateUI();
+    }
 
-        if (isInventoryOpen) UpdateUI();
+    public void CloseInventory()
+    {
+        if (!IsInventoryOpen) return;
+        IsInventoryOpen = false;
+        if (inventoryPanel != null) inventoryPanel.SetActive(false);
+        lastSelectedUnit = null;
+
+        LootUI lootUI = FindObjectOfType<LootUI>();
+        if (lootUI != null)
+        {
+            lootUI.CloseLoot();
+        }
     }
 
     public void UpdateUI()
@@ -87,6 +112,13 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < inv.maxSlots; i++)
         {
             GameObject newSlot = Instantiate(slotPrefab, slotContainer);
+
+            SlotUI slotScript = newSlot.GetComponent<SlotUI>();
+            if (slotScript != null)
+            {
+                slotScript.panelType = SlotPanelType.Inventory;
+                slotScript.slotIndex = i;
+            }
             
             Image iconImage = newSlot.transform.Find("Icon").GetComponent<Image>();
             TextMeshProUGUI amountText = newSlot.transform.Find("AmountText").GetComponent<TextMeshProUGUI>();

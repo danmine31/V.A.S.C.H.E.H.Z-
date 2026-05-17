@@ -6,5 +6,8 @@ public enum ItemType
     Ammo,
     Medkit,
     Artifact,
-    Key_Red
+    Key_Blue,
+    Key_Red,
+    Key_Green,
+    Key_Yellow
 }
