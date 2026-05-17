@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class SelectionController : MonoBehaviour
 {
@@ -11,12 +12,20 @@ public class SelectionController : MonoBehaviour
     private List<UnitController> selectedUnits = new List<UnitController>();
     private Vector2 startMousePos;
     private bool isBoxSelecting = false;
+    private bool startedClickOnUI = false;
     public static bool isRadiusesVisible = false;
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject()) 
+            {
+                startedClickOnUI = true;
+                return;
+            }
+            
+            startedClickOnUI = false;
             startMousePos = Input.mousePosition;
             isBoxSelecting = false;
             if (selectionBoxVisual != null) selectionBoxVisual.gameObject.SetActive(false);
@@ -24,6 +33,8 @@ public class SelectionController : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
+            if (startedClickOnUI) return;
+
             Vector2 currentMousePos = Input.mousePosition;
             float distance = Vector2.Distance(startMousePos, currentMousePos);
             if (distance > 10f && !isBoxSelecting)
@@ -51,6 +62,12 @@ public class SelectionController : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            if (startedClickOnUI) 
+            {
+                startedClickOnUI = false;
+                return;
+            }
+
             if (isBoxSelecting) SelectUnitsInBox();
             else SelectSingleUnit();
             
@@ -137,6 +154,21 @@ public class SelectionController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
+        if (Physics.Raycast(ray, out hit, 1000)) 
+        {
+            LootBox box = hit.collider.GetComponent<LootBox>();
+            if (box != null)
+            {
+                foreach (var unit in selectedUnits)
+                {
+                    unit.MoveTo(hit.point);
+                }
+                
+                box.InteractWithBox(selectedUnits); 
+                return;
+            }
+        }
+
         if (Physics.Raycast(ray, out hit, 1000, unitLayer))
         {
             Health enemyHealth = hit.collider.GetComponent<Health>();
@@ -200,4 +232,3 @@ public class SelectionController : MonoBehaviour
         return null;
     }
 }
-
