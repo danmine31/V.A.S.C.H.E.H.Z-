@@ -1,4 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+public enum SpawnerMode { Endless, ByCount, ByTime }
 
 public class UnitSpawner : MonoBehaviour
 {
@@ -6,23 +9,57 @@ public class UnitSpawner : MonoBehaviour
     public GameObject unitPrefab;
     public Transform container;
 
-    [Header("Настройки ИИ")]
+    [Header("Настройки ИИ и Команды")]
     public AIBehavior spawnBehavior = AIBehavior.Defend;
-    
-    [Header("Командные настройки")]
     public int teamID = 0;
     public int colorID = 0;
     public Material teamMaterial;
 
-    [Header("Параметры спавна")]
+    [Header("Раненые бойцы")]
+    [Range(1f, 100f)]
+    public float spawnHealthPercent = 100f;
+
+    [Header("Режим работы Спавнера")]
     public float spawnCooldown = 15f;
+    public SpawnerMode mode = SpawnerMode.ByCount;
+
+    [Header("Лимиты (в зависимости от режима)")]
+    public int totalSpawnLimit = 50;
+    public float survivalTime = 120f;
     
+    [Tooltip("-1 означает бесконечное число живых")]
+    public int maxAliveUnits = 10;
+
+    [Header("Награда за зачистку/выживание")]
+    public GameObject rewardLootBoxPrefab;
+
     private float timer;
+    private float lifeTimer = 0f;
+    private int currentSpawnedCount = 0;
+    private List<GameObject> aliveUnits = new List<GameObject>();
+    private bool isDepleted = false;
 
     void Update()
     {
+        if (isDepleted) return;
+
+        aliveUnits.RemoveAll(unit => unit == null);
+
+        if (mode == SpawnerMode.ByTime)
+        {
+            lifeTimer += Time.deltaTime;
+            if (lifeTimer >= survivalTime)
+            {
+                DepleteSpawner();
+                return;
+            }
+        }
+
         timer += Time.deltaTime;
-        if (timer >= spawnCooldown)
+
+        bool canSpawnAlive = (maxAliveUnits == -1 || aliveUnits.Count < maxAliveUnits);
+
+        if (timer >= spawnCooldown && canSpawnAlive)
         {
             Spawn();
             timer = 0;
@@ -31,32 +68,52 @@ public class UnitSpawner : MonoBehaviour
 
     void Spawn()
     {
-        GameObject newUnit = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+        GameObject newUnit = Instantiate(unitPrefab, transform.position, transform.rotation);
         
-        if (container != null) 
-        {
-            newUnit.transform.SetParent(container);
-        }
+        if (container != null) newUnit.transform.SetParent(container);
+
+        aliveUnits.Add(newUnit);
+        currentSpawnedCount++;
 
         Health health = newUnit.GetComponent<Health>();
         if (health != null)
         {
             health.teamID = this.teamID;
             health.colorID = this.colorID;
+            if (spawnHealthPercent < 100f)
+                health.currentHealth = (int)(health.maxHealth * (spawnHealthPercent / 100f));
         }
 
         var renderer = newUnit.GetComponentInChildren<Renderer>();
-        if (renderer != null && teamMaterial != null)
-        {
-            renderer.material = teamMaterial;
-        }
+        if (renderer != null && teamMaterial != null) renderer.material = teamMaterial;
 
         UnitAI ai = newUnit.GetComponent<UnitAI>();
-        if (ai != null)
-        {
-            ai.currentBehavior = spawnBehavior;
-        }
+        if (ai != null) ai.currentBehavior = spawnBehavior;
         
         newUnit.layer = LayerMask.NameToLayer("Unit");
+
+        if (mode == SpawnerMode.ByCount && currentSpawnedCount >= totalSpawnLimit)
+        {
+            DepleteSpawner();
+        }
+    }
+
+    void DepleteSpawner()
+    {
+        isDepleted = true;
+        Debug.Log($"<color=orange>[Спавнер] {gameObject.name} закончил свою работу!</color>");
+
+        if (rewardLootBoxPrefab != null)
+            Instantiate(rewardLootBoxPrefab, transform.position, Quaternion.identity);
+
+        enabled = false;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(1f, 0f, 0f, 0.4f);
+        Gizmos.DrawCube(transform.position + Vector3.up * 1f, new Vector3(1f, 2f, 1f));
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position + Vector3.up * 1f, transform.forward * 3f);
     }
 }

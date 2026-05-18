@@ -20,7 +20,10 @@ public class Health : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
+        if (currentHealth == 0) 
+        {
+            currentHealth = maxHealth;
+        }
 
         if (healthBarPrefab != null)
         {
@@ -29,7 +32,7 @@ public class Health : MonoBehaviour
             if (healthBar != null)
             {
                 healthBar.target = this.transform;
-                healthBar.UpdateHealthBar(currentHealth, maxHealth);
+                healthBar.UpdateHealthBar(currentHealth, maxHealth); 
             }
         }
 
