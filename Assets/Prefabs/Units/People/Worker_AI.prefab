@@ -8,10 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 216492478357597687, guid: cc0eab7345b460649965de7e2cbe7f64, type: 3}
+      propertyPath: neutralMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
     - target: {fileID: 1357777502235203779, guid: cc0eab7345b460649965de7e2cbe7f64, type: 3}
       propertyPath: m_Name
-      value: Worker_Base
+      value: Worker_AI
       objectReference: {fileID: 0}
+    - target: {fileID: 1721618089050330112, guid: cc0eab7345b460649965de7e2cbe7f64, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
     - target: {fileID: 7521470928178819155, guid: cc0eab7345b460649965de7e2cbe7f64, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

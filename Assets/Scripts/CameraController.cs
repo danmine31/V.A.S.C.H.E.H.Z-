@@ -23,6 +23,19 @@ public class CameraController : MonoBehaviour
     [Header("Настройки мыши")]
     public float mouseSensitivity = 5f;
 
+    [Header("Основа Карты")]
+    public Renderer groundRenderer;
+    public float boundsPadding = 0f;
+
+    [Header("Ограничения зума")]
+    public float minZoomY = 5f;
+    public float maxZoomY = 30f;
+
+    private float minX;
+    private float maxX;
+    private float minZ;
+    private float maxZ;
+
     private float currentPitch = 0f;
     private float currentYaw;
 
@@ -30,6 +43,25 @@ public class CameraController : MonoBehaviour
     {
         currentPitch = transform.eulerAngles.x;
         currentYaw = transform.eulerAngles.y;
+
+        UpdateMapBounds();
+    }
+
+    public void UpdateMapBounds()
+    {
+        if (groundRenderer != null)
+        {
+            minX = groundRenderer.bounds.min.x - boundsPadding;
+            maxX = groundRenderer.bounds.max.x + boundsPadding;
+            minZ = groundRenderer.bounds.min.z - boundsPadding;
+            maxZ = groundRenderer.bounds.max.z + boundsPadding;
+            
+            Debug.Log($"<color=cyan>[Камера] Границы карты обновлены: X({minX} до {maxX}), Z({minZ} до {maxZ})</color>");
+        }
+        else
+        {
+            Debug.LogWarning("Plane (groundRenderer) не назначен в скрипт камеры!");
+        }
     }
 
     void Update()
@@ -61,8 +93,24 @@ public class CameraController : MonoBehaviour
 
         currentPitch = Mathf.Clamp(currentPitch, minPitchAngle, maxPitchAngle);
         transform.rotation = Quaternion.Euler(currentPitch, currentYaw, 0f);
-        
+
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        transform.position += transform.forward * scroll * zoomSpeed;
+        if (scroll != 0)
+        {
+            Vector3 nextPos = transform.position + transform.forward * scroll * zoomSpeed;
+
+            if (nextPos.y >= minZoomY && nextPos.y <= maxZoomY)
+            {
+                transform.position = nextPos;
+            }
+        }
+
+        Vector3 clampedPos = transform.position;
+        
+        clampedPos.x = Mathf.Clamp(clampedPos.x, minX, maxX);
+        clampedPos.z = Mathf.Clamp(clampedPos.z, minZ, maxZ);
+        clampedPos.y = Mathf.Clamp(clampedPos.y, minZoomY, maxZoomY);
+        
+        transform.position = clampedPos;
     }
 }
