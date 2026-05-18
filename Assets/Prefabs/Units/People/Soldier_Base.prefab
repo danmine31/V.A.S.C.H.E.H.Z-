@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 1357777502235203779}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.91401, y: 1, z: 16.00005}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -72,7 +72,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
+  - {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -160,7 +160,7 @@ MonoBehaviour:
   currentHealth: 200
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
   healthBar: {fileID: 0}
-  neutralMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
+  neutralMaterial: {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
   playerMaterial: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
   enemyMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
   allyMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
