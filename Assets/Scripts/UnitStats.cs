@@ -1,13 +1,17 @@
 using UnityEngine;
 
+public enum Fraction { None, People, Mages, Robots }
+
 public class UnitStats : MonoBehaviour
 {
     [Header("Паспорт (Идентификация)")]
     public string unitName = "Unknown Unit";
+    public Fraction unitFraction = Fraction.People;
     public int ownerID = 1;
     public int teamID = 1;
 
     [Header("Внешний вид")]
+    [Tooltip("Цвет автоматически перезапишется из GameManager")]
     public Color unitColor = Color.white;
 
     [Header("Боевые характеристики")]
@@ -22,31 +26,6 @@ public class UnitStats : MonoBehaviour
 
     void Awake()
     {
-        SyncHealth();
-    }
-
-    void Start()
-    {
-        ApplyColorOptimized();
-    }
-
-    void ApplyColorOptimized()
-    {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        
-        foreach (Renderer rend in renderers)
-        {
-            MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
-            rend.GetPropertyBlock(propBlock);
-            
-            propBlock.SetColor("_BaseColor", unitColor); 
-            
-            rend.SetPropertyBlock(propBlock);
-        }
-    }
-
-    void SyncHealth()
-    {
         Health healthComponent = GetComponent<Health>();
         if (healthComponent != null)
         {
@@ -55,6 +34,55 @@ public class UnitStats : MonoBehaviour
             {
                 healthComponent.currentHealth = this.maxHealth;
             }
+        }
+    }
+
+    void Start()
+    {
+        UpdateDataFromManager();
+        ApplyColorOptimized();
+    }
+
+    #if UNITY_EDITOR
+    void OnValidate()
+    {
+        if (!Application.isPlaying)
+        {
+            UpdateDataFromManager();
+            ApplyColorOptimized();
+        }
+    }
+    #endif
+
+    void UpdateDataFromManager()
+    {
+        GameManager gm = GameManager.Instance;
+        
+        if (gm == null) 
+        {
+            gm = Object.FindAnyObjectByType<GameManager>();
+        }
+
+        if (gm != null)
+        {
+            unitColor = gm.GetPlayerColor(ownerID);
+            teamID = gm.GetPlayerTeam(ownerID);
+        }
+    }
+
+    public void ApplyColorOptimized()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            if (rend == null) continue;
+
+            MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
+            rend.GetPropertyBlock(propBlock);
+            
+            propBlock.SetColor("_BaseColor", unitColor); 
+            
+            rend.SetPropertyBlock(propBlock);
         }
     }
 }

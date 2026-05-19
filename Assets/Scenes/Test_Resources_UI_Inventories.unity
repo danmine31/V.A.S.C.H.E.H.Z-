@@ -484,6 +484,59 @@ MonoBehaviour:
   boundsPadding: 0
   minZoomY: 5
   maxZoomY: 30
+--- !u!1 &492082207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 492082209}
+  - component: {fileID: 492082208}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &492082208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492082207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe090fc9d523d4648be0a46cb56cd5d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  players:
+  - ownerID: 1
+    teamID: 1
+    playerName: Player
+    playerColor: {r: 0.00000011920929, g: 0, b: 1, a: 0}
+  - ownerID: 2
+    teamID: 2
+    playerName: Enemy
+    playerColor: {r: 1, g: 0, b: 0.630872, a: 0}
+--- !u!4 &492082209
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492082207}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -35.18095, y: -0, z: -99.53015}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &504714579
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,6 +683,14 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
     - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: spawnBehavior
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: overrideTeamID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: overrideOwnerID
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
@@ -1062,7 +1123,7 @@ PrefabInstance:
       objectReference: {fileID: 2066456590}
     - target: {fileID: 8686675235630871369, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: m_VersionIndex
-      value: 4987
+      value: 5002
       objectReference: {fileID: 0}
     - target: {fileID: 8994604601533140577, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: m_Mesh
@@ -1239,6 +1300,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1149573508}
+    - target: {fileID: 761640189177185825, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4996
+      objectReference: {fileID: 0}
     - target: {fileID: 1067326276213062409, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1290,6 +1355,22 @@ PrefabInstance:
     - target: {fileID: 1780077338621084086, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003354529711429788, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
+      propertyPath: teamID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003354529711429788, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
+      propertyPath: ownerID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003354529711429788, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
+      propertyPath: unitColor.b
+      value: 0.630872
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003354529711429788, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
+      propertyPath: unitColor.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2157,9 +2238,8 @@ MonoBehaviour:
   unitPrefab: {fileID: 3484730469188419016, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
   container: {fileID: 1244847326}
   spawnBehavior: 2
-  teamID: 2
-  colorID: 2
-  teamMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
+  overrideOwnerID: 0
+  overrideTeamID: 0
   spawnHealthPercent: 45.9
   spawnCooldown: 1
   mode: 1
@@ -2464,6 +2544,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1244847326}
     m_Modifications:
+    - target: {fileID: 844172110389334420, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
+      propertyPath: teamID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 844172110389334420, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
+      propertyPath: ownerID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 844172110389334420, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
+      propertyPath: unitColor.b
+      value: 0.630872
+      objectReference: {fileID: 0}
+    - target: {fileID: 844172110389334420, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
+      propertyPath: unitColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3484730469188419016, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
       propertyPath: m_Name
       value: Soldier_AI
@@ -2521,6 +2617,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1244847326}
     m_Modifications:
+    - target: {fileID: 239979907279148692, guid: 6b1644e42a2bbdc43b93830e12651009, type: 3}
+      propertyPath: teamID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 239979907279148692, guid: 6b1644e42a2bbdc43b93830e12651009, type: 3}
+      propertyPath: ownerID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 239979907279148692, guid: 6b1644e42a2bbdc43b93830e12651009, type: 3}
+      propertyPath: unitColor.b
+      value: 0.630872
+      objectReference: {fileID: 0}
+    - target: {fileID: 239979907279148692, guid: 6b1644e42a2bbdc43b93830e12651009, type: 3}
+      propertyPath: unitColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3624977224909967294, guid: 6b1644e42a2bbdc43b93830e12651009, type: 3}
       propertyPath: m_LocalPosition.x
       value: -35.31343
@@ -2620,17 +2732,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70ef3438d9246a245890c087a336e9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  unitFraction: 0
-  teamID: 2
-  colorID: 2
-  maxHealth: 500
+  maxHealth: 100
   currentHealth: 500
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
   healthBar: {fileID: 0}
-  neutralMaterial: {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
-  playerMaterial: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
-  enemyMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
-  allyMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
 --- !u!114 &1745866974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2646,9 +2751,8 @@ MonoBehaviour:
   unitPrefab: {fileID: 3484730469188419016, guid: 6b1d59eec48c7824a9761d862830296d, type: 3}
   container: {fileID: 1244847326}
   spawnBehavior: 3
-  teamID: 2
-  colorID: 2
-  teamMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
+  overrideOwnerID: 0
+  overrideTeamID: 0
   spawnHealthPercent: 1
   spawnCooldown: 15
   mode: 0
@@ -4869,6 +4973,14 @@ PrefabInstance:
       propertyPath: spawnBehavior
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: overrideTeamID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3682553571743167077, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
+      propertyPath: overrideOwnerID
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7382642392366499392, guid: 2fa3dce98acc786469c9f41d7a4a27bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 40.2
@@ -4944,3 +5056,4 @@ SceneRoots:
   - {fileID: 1679092368}
   - {fileID: 1745866978}
   - {fileID: 1514006414}
+  - {fileID: 492082209}

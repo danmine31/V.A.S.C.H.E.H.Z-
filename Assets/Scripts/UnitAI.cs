@@ -16,7 +16,6 @@ public class UnitAI : MonoBehaviour
     public float patrolRadius = 10f;
 
     [Header("Стрельба")]
-    public float attackDamage = 10f;
     public float attackSpeed = 1f;
     public GameObject bulletPrefab;
     public Transform firePoint;
@@ -28,12 +27,16 @@ public class UnitAI : MonoBehaviour
     private Health targetEnemy;
     private Vector3 startPosition;
     private float patrolTimer;
+    
     private Health myHealth;
+    private UnitStats myStats;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
+        myStats = GetComponent<UnitStats>();
+        
         startPosition = transform.position;
         RadiusVisualizer visualizer = GetComponent<RadiusVisualizer>();
         if (visualizer != null)
@@ -45,9 +48,7 @@ public class UnitAI : MonoBehaviour
 
     void Update()
     {
-        if (isManualControl) return; 
-
-        if (!canAttack) return;
+        if (isManualControl || !canAttack) return;
 
         switch (currentBehavior)
         {
@@ -89,15 +90,12 @@ public class UnitAI : MonoBehaviour
                 }
             }
         }
-        else
+        else if (Vector3.Distance(transform.position, startPosition) > 1f)
         {
-            if (Vector3.Distance(transform.position, startPosition) > 1f)
+            if (agent.isOnNavMesh)
             {
-                if (agent.isOnNavMesh)
-                {
-                    agent.isStopped = false;
-                    agent.SetDestination(startPosition);
-                }
+                agent.isStopped = false;
+                agent.SetDestination(startPosition);
             }
         }
     }
@@ -153,19 +151,16 @@ public class UnitAI : MonoBehaviour
             
             PerformAttack(targetEnemy); 
         }
-        else
+        else if (agent.isOnNavMesh)
         {
-            if (agent.isOnNavMesh)
-            {
-                agent.isStopped = false; 
-                agent.SetDestination(targetEnemy.transform.position);
-            }
+            agent.isStopped = false; 
+            agent.SetDestination(targetEnemy.transform.position);
         }
     }
 
     public void PerformAttack(Health target)
     {
-        if (target == null) return;
+        if (target == null || myStats == null) return;
 
         if (Time.time >= nextAttackTime)
         {
@@ -176,8 +171,7 @@ public class UnitAI : MonoBehaviour
 
             if (projectile != null)
             {
-                Fraction myFraction = myHealth.unitFraction;
-                projectile.Setup(target, attackDamage, myFraction);
+                projectile.Setup(target, myStats.damage, myStats.unitFraction);
             }
             nextAttackTime = Time.time + attackSpeed; 
         }
@@ -189,18 +183,22 @@ public class UnitAI : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         Health closestTarget = null;
 
-        foreach (Health unit in allUnits)
+        foreach (Health unitHealth in allUnits)
         {
-            if (unit == null) continue; 
+            if (unitHealth == null || unitHealth == myHealth) continue; 
 
-            if (unit == myHealth || unit.teamID == myHealth.teamID || unit.teamID == 0 || myHealth.teamID == 0) 
-                continue;
+            UnitStats targetStats = unitHealth.GetComponent<UnitStats>();
+            
+            if (myStats != null && targetStats != null)
+            {
+                if (targetStats.teamID == myStats.teamID) continue; 
+            }
 
-            float distance = Vector3.Distance(transform.position, unit.transform.position);
+            float distance = Vector3.Distance(transform.position, unitHealth.transform.position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                closestTarget = unit;
+                closestTarget = unitHealth;
             }
         }
         targetEnemy = closestTarget;

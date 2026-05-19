@@ -106,9 +106,9 @@ public class SelectionController : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 1000, unitLayer))
         {
             UnitController unit = hit.collider.GetComponent<UnitController>();
-            Health health = hit.collider.GetComponent<Health>();
+            UnitStats stats = hit.collider.GetComponent<UnitStats>();
 
-            if (unit != null && health != null && health.teamID == 1)
+            if (unit != null && stats != null && stats.ownerID == 1)
             {
                 selectedUnits.Add(unit);
                 unit.SetSelected(true);
@@ -133,9 +133,9 @@ public class SelectionController : MonoBehaviour
         var allUnits = Object.FindObjectsByType<UnitController>(FindObjectsInactive.Exclude);
         foreach (UnitController unit in allUnits)
         {
-            Health health = unit.GetComponent<Health>();
+            UnitStats stats = unit.GetComponent<UnitStats>();
             
-            if (health != null && health.teamID == 1)
+            if (stats != null && stats.ownerID == 1)
             {
                 Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
                 if (selectionRect.Contains(screenPos))
@@ -174,9 +174,11 @@ public class SelectionController : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 1000, unitLayer))
         {
             Health enemyHealth = hit.collider.GetComponent<Health>();
-            if (enemyHealth != null)
+            UnitStats enemyStats = hit.collider.GetComponent<UnitStats>();
+
+            if (enemyHealth != null && enemyStats != null)
             {
-                if (enemyHealth.teamID != 1) 
+                if (enemyStats.teamID != 1) 
                 {
                     foreach (var unit in selectedUnits)
                     {

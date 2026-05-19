@@ -10,9 +10,10 @@ public class StorySquadSpawner : MonoBehaviour
 
     [Header("Настройки ИИ и Команды")]
     public AIBehavior spawnBehavior = AIBehavior.Defend;
-    public int teamID = 0;
-    public int colorID = 0;
-    public Material teamMaterial;
+    
+    [Tooltip("Оставь 0, чтобы отряд использовал ID из своего префаба.")]
+    public int overrideOwnerID = 0;
+    public int overrideTeamID = 0;
 
     void Start()
     {
@@ -25,15 +26,13 @@ public class StorySquadSpawner : MonoBehaviour
             
             if (container != null) newUnit.transform.SetParent(container);
 
-            Health health = newUnit.GetComponent<Health>();
-            if (health != null)
+            UnitStats stats = newUnit.GetComponent<UnitStats>();
+            if (stats != null)
             {
-                health.teamID = this.teamID;
-                health.colorID = this.colorID;
+                if (overrideOwnerID != 0) stats.ownerID = overrideOwnerID;
+                if (overrideTeamID != 0) stats.teamID = overrideTeamID;
+                stats.ApplyColorOptimized();
             }
-
-            var renderer = newUnit.GetComponentInChildren<Renderer>();
-            if (renderer != null && teamMaterial != null) renderer.material = teamMaterial;
 
             UnitAI ai = newUnit.GetComponent<UnitAI>();
             if (ai != null) ai.currentBehavior = spawnBehavior;
