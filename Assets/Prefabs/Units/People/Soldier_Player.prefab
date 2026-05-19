@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitController
   gatherRange: 2.5
   gatherCooldown: 1.5
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  selectedColor: {r: 0, g: 0.91210115, b: 1, a: 1}
 --- !u!114 &-6506771422440855998
 MonoBehaviour:
   m_ObjectHideFlags: 0

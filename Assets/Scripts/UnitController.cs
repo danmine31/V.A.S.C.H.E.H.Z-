@@ -17,12 +17,12 @@ public class UnitController : MonoBehaviour
     public float gatherCooldown = 1.5f;
 
     [Header("Selection")]
-    public Color selectedColor = Color.green;
+    public Color selectedColor = Color.cyan;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        unitRenderer = GetComponent<Renderer>();
+        unitRenderer = GetComponentInChildren<Renderer>(); 
         autoPilot = GetComponent<UnitAI>();
         inventory = GetComponent<UnitInventory>();
 
