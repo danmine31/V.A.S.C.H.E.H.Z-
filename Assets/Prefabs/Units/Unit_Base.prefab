@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 7282908922549697184}
   - component: {fileID: 7653284761955854558}
   - component: {fileID: 4942405185864518812}
+  - component: {fileID: -3168279087183436918}
   - component: {fileID: 5602400923934735514}
   - component: {fileID: 6273980438665782693}
   - component: {fileID: 7769207093333053475}
@@ -113,6 +114,28 @@ MonoBehaviour:
   playerMaterial: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
   enemyMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
   allyMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
+--- !u!114 &-3168279087183436918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8062330763763847126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19d0ed019cd5fe49b2190177481890b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitStats
+  unitName: Unknown Unit
+  ownerID: 1
+  teamID: 1
+  unitColor: {r: 1, g: 1, b: 1, a: 1}
+  maxHealth: 100
+  damage: 10
+  attackSpeed: 1
+  armor: 0
+  level: 1
+  currentXP: 0
 --- !u!114 &5602400923934735514
 MonoBehaviour:
   m_ObjectHideFlags: 0
