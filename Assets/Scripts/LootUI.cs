@@ -19,7 +19,6 @@ public class LootUI : MonoBehaviour
     void Start()
     {
         inventoryUI = FindObjectOfType<InventoryUI>();
-        selectionCtrl = FindObjectOfType<SelectionController>();
         
         if (lootPanel != null) lootPanel.SetActive(false);
     }
@@ -28,7 +27,7 @@ public class LootUI : MonoBehaviour
     {
         if (lootPanel != null && lootPanel.activeInHierarchy)
         {
-            UnitController activeUnit = selectionCtrl != null ? selectionCtrl.GetMainSelectedUnit() : null;
+            UnitController activeUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedUnit() : null;
 
             if (activeUnit == null || currentLootBox == null)
             {

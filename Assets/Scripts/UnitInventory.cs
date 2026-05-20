@@ -43,6 +43,29 @@ public class UnitInventory : MonoBehaviour
             Debug.LogWarning("Инвентарь переполнен! Некуда класть " + type);
         }
     }
+    public bool RemoveItem(ItemType type, int amountToRemove)
+    {
+        if (GetItemCount(type) < amountToRemove) return false;
+
+        for (int i = slots.Count - 1; i >= 0; i--)
+        {
+            if (slots[i].itemType == type)
+            {
+                if (slots[i].amount >= amountToRemove)
+                {
+                    slots[i].amount -= amountToRemove;
+                    if (slots[i].amount <= 0) slots.RemoveAt(i);
+                    return true;
+                }
+                else
+                {
+                    amountToRemove -= slots[i].amount;
+                    slots.RemoveAt(i);
+                }
+            }
+        }
+        return true;
+    }
 
     public int GetItemCount(ItemType type)
     {

@@ -19,7 +19,28 @@ public class SelectionController : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
+        SelectionController[] allControllers = FindObjectsByType<SelectionController>(FindObjectsSortMode.None);
+        
+        if (allControllers.Length > 1)
+        {
+            foreach (var ctrl in allControllers)
+            {
+                if (ctrl != this)
+                {
+                    if (this.selectionBoxVisual == null && ctrl.selectionBoxVisual != null)
+                    {
+                        Destroy(this);
+                        return;
+                    }
+                    else
+                    {
+                        Destroy(ctrl);
+                    }
+                }
+            }
+        }
+        
+        Instance = this;
     }
 
     public bool HasSelectedUnits()

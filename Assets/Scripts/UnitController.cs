@@ -5,7 +5,6 @@ public class UnitController : MonoBehaviour
 {
     private NavMeshAgent agent;
     private Renderer unitRenderer;
-    private Color originalColor;
     private Health targetEnemy;
     private UnitAI autoPilot;
     private UnitInventory inventory;
@@ -16,20 +15,12 @@ public class UnitController : MonoBehaviour
     public float gatherRange = 2.5f;
     public float gatherCooldown = 1.5f;
 
-    [Header("Selection")]
-    public Color selectedColor = Color.cyan;
-
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         unitRenderer = GetComponentInChildren<Renderer>(); 
         autoPilot = GetComponent<UnitAI>();
         inventory = GetComponent<UnitInventory>();
-
-        if (unitRenderer != null)
-        {
-            originalColor = unitRenderer.material.color;
-        }
     }
 
     void Update()
@@ -124,10 +115,7 @@ public class UnitController : MonoBehaviour
 
     public void SetSelected(bool isSelected)
     {
-        if (unitRenderer != null)
-        {
-            unitRenderer.material.color = isSelected ? selectedColor : originalColor;
-        }
+
     }
 
     public void MoveTo(Vector3 point)

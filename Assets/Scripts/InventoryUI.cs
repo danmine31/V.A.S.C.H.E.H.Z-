@@ -27,7 +27,6 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
-        selectionCtrl = FindObjectOfType<SelectionController>();
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         IsInventoryOpen = false;
     }
@@ -41,7 +40,7 @@ public class InventoryUI : MonoBehaviour
 
         if (IsInventoryOpen)
         {
-            UnitController currentUnit = selectionCtrl != null ? selectionCtrl.GetMainSelectedUnit() : null;
+            UnitController currentUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedUnit() : null;
 
             if (currentUnit == null)
             {
@@ -64,7 +63,7 @@ public class InventoryUI : MonoBehaviour
         }
         else
         {
-            if (selectionCtrl != null && selectionCtrl.GetMainSelectedUnit() == null)
+            if (SelectionController.Instance != null && SelectionController.Instance.GetMainSelectedUnit() == null)
             {
                 Debug.LogWarning("Сначала выделите юнита!");
                 return; 
@@ -97,8 +96,8 @@ public class InventoryUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        if (selectionCtrl == null) return;
-        UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
+        if (SelectionController.Instance == null) return;
+        UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
         if (activeUnit == null) return;
 
         UnitInventory inv = activeUnit.GetComponent<UnitInventory>();

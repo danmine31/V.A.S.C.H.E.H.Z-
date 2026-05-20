@@ -164,6 +164,22 @@ public class UnitAI : MonoBehaviour
 
         if (Time.time >= nextAttackTime)
         {
+            if (myStats.ownerID == 1)
+            {
+                UnitInventory inventory = GetComponent<UnitInventory>();
+                if (inventory != null)
+                {
+                    if (inventory.GetItemCount(ItemType.Ammo) > 0)
+                    {
+                        inventory.RemoveItem(ItemType.Ammo, 1);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+
             if (bulletPrefab == null || firePoint == null) return;
 
             GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
