@@ -15,6 +15,18 @@ public class SelectionController : MonoBehaviour
     private bool startedClickOnUI = false;
     public static bool isRadiusesVisible = false;
 
+    public static SelectionController Instance;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+
+    public bool HasSelectedUnits()
+    {
+        return selectedUnits.Count > 0;
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -103,16 +115,16 @@ public class SelectionController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 1000, unitLayer))
+        if (Physics.Raycast(ray, out hit, 1000f, unitLayer))
         {
-            UnitController unit = hit.collider.GetComponent<UnitController>();
-            UnitStats stats = hit.collider.GetComponent<UnitStats>();
+            UnitController unit = hit.collider.GetComponentInParent<UnitController>();
+            UnitStats stats = hit.collider.GetComponentInParent<UnitStats>();
 
             if (unit != null && stats != null && stats.ownerID == 1)
             {
                 selectedUnits.Add(unit);
                 unit.SetSelected(true);
-                Debug.Log("Выбран юнит: " + unit.name);
+                Debug.Log($"<color=cyan>Одиночный клик: {stats.unitName} добавлен в отряд!</color>");
             }
         }
     }
@@ -156,65 +168,46 @@ public class SelectionController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 1000)) 
+        if (Physics.Raycast(ray, out hit, 1000f)) 
         {
-            LootBox box = hit.collider.GetComponent<LootBox>();
+            LootBox box = hit.collider.GetComponentInParent<LootBox>();
             if (box != null)
             {
-                foreach (var unit in selectedUnits)
-                {
-                    unit.MoveTo(hit.point);
-                }
-                
+                foreach (var unit in selectedUnits) unit.MoveTo(hit.point);
                 box.InteractWithBox(selectedUnits); 
                 return;
             }
         }
 
-        if (Physics.Raycast(ray, out hit, 1000, unitLayer))
+        if (Physics.Raycast(ray, out hit, 1000f, unitLayer))
         {
-            Health enemyHealth = hit.collider.GetComponent<Health>();
-            UnitStats enemyStats = hit.collider.GetComponent<UnitStats>();
+            Health enemyHealth = hit.collider.GetComponentInParent<Health>();
+            UnitStats enemyStats = hit.collider.GetComponentInParent<UnitStats>();
 
             if (enemyHealth != null && enemyStats != null)
             {
                 if (enemyStats.teamID != 1) 
                 {
-                    foreach (var unit in selectedUnits)
-                    {
-                        unit.SetTarget(enemyHealth);
-                        Debug.Log("Приказ: атаковать " + hit.collider.name);
-                    }
+                    foreach (var unit in selectedUnits) unit.SetTarget(enemyHealth);
                     return;
                 }
-                else
-                {
-                    return;
-                }
+                else return;
             }
         }
 
-        if (Physics.Raycast(ray, out hit, 1000, resourceLayer))
+        if (Physics.Raycast(ray, out hit, 1000f, resourceLayer))
         {
-            ResourceSource resource = hit.collider.GetComponent<ResourceSource>();
+            ResourceSource resource = hit.collider.GetComponentInParent<ResourceSource>();
             if (resource != null)
             {
-                foreach (var unit in selectedUnits)
-                {
-                    unit.SetResourceTarget(resource);
-                    Debug.Log("Приказ: добывать ресурс " + hit.collider.name);
-                }
+                foreach (var unit in selectedUnits) unit.SetResourceTarget(resource);
                 return;
             }
         }
 
-        if (Physics.Raycast(ray, out hit, 1000, groundLayer))
+        if (Physics.Raycast(ray, out hit, 1000f, groundLayer))
         {
-            foreach (var unit in selectedUnits)
-            {
-                unit.MoveTo(hit.point);
-                Debug.Log("Приказ: идти в точку " + hit.point);
-            }
+            foreach (var unit in selectedUnits) unit.MoveTo(hit.point);
         }
     }
 

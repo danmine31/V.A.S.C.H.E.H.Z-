@@ -103,17 +103,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70ef3438d9246a245890c087a336e9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  unitFraction: 0
-  teamID: 0
-  colorID: 0
   maxHealth: 100
   currentHealth: 0
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
   healthBar: {fileID: 0}
-  neutralMaterial: {fileID: 2100000, guid: e9c845c6703d6a3458149f7ad4bd34c1, type: 2}
-  playerMaterial: {fileID: 2100000, guid: 2e2a376f4e30bf54baf1c8e6bb79284f, type: 2}
-  enemyMaterial: {fileID: 2100000, guid: 6a08174873c0c6a48b9dfb1e0a157379, type: 2}
-  allyMaterial: {fileID: 2100000, guid: f048dda4af9706e4e9924c2aa4cc3646, type: 2}
 --- !u!114 &-3168279087183436918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,9 +120,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitStats
   unitName: Unknown Unit
+  unitFraction: 1
   ownerID: 1
   teamID: 1
-  unitColor: {r: 1, g: 1, b: 1, a: 1}
+  unitColor: {r: 0.00000011920929, g: 0, b: 1, a: 0}
   maxHealth: 100
   damage: 10
   attackSpeed: 1
@@ -154,7 +148,6 @@ MonoBehaviour:
   aggroRadius: 15
   maxChaseDistance: 25
   patrolRadius: 10
-  attackDamage: 10
   attackSpeed: 1
   bulletPrefab: {fileID: 0}
   firePoint: {fileID: 0}
