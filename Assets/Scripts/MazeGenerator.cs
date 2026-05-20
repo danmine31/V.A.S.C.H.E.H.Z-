@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 
 public class MazeGenerator : MonoBehaviour
 {
@@ -61,36 +62,66 @@ public class MazeGenerator : MonoBehaviour
         }
     }
 
-    void BuildMazeInScene()
+    void BuildMazeInScene() 
     {
-        if (floorPrefab != null)
+        GameObject floorObj = null;
+
+        if (floorPrefab != null) 
         {
             float floorPosX = (width * cellSize) / 2f - (cellSize / 2f);
             float floorPosZ = (height * cellSize) / 2f - (cellSize / 2f);
-            GameObject floor = Instantiate(floorPrefab, new Vector3(floorPosX, 0, floorPosZ), Quaternion.identity);
+            floorObj = Instantiate(floorPrefab, new Vector3(floorPosX, 0, floorPosZ), Quaternion.identity);
             
-            floor.transform.localScale = new Vector3((width * cellSize) / 10f, 1, (height * cellSize) / 10f);
-            floor.transform.parent = this.transform;
-            floor.layer = LayerMask.NameToLayer("Ground");
+            float floorMargin = 5f; // Наш отступ
+            floorObj.transform.localScale = new Vector3(
+                ((width * cellSize) / 10f) + floorMargin, 
+                1, 
+                ((height * cellSize) / 10f) + floorMargin
+            );
+            floorObj.transform.parent = this.transform;
+            floorObj.layer = LayerMask.NameToLayer("Ground");
             
-            if (floor.GetComponent<Collider>() == null)
-            {
-                floor.AddComponent<BoxCollider>();
+            if (floorObj.GetComponent<Collider>() == null) {
+                floorObj.AddComponent<BoxCollider>();
             }
         }
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width; x++) 
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++) 
             {
-                if (maze[x, y] == 1)
+                if (maze[x, y] == 1) 
                 {
                     float wallHeight = wallPrefab.transform.localScale.y;
-
                     Vector3 position = new Vector3(x * cellSize, wallHeight / 2f, y * cellSize);
                     GameObject wall = Instantiate(wallPrefab, position, Quaternion.identity);
                     wall.transform.parent = this.transform;
                 }
+            }
+        }
+
+        if (floorObj != null)
+        {
+            NavMeshSurface navSurface = floorObj.GetComponent<NavMeshSurface>();
+            if (navSurface == null)
+            {
+                navSurface = floorObj.AddComponent<NavMeshSurface>();
+            }
+            
+            navSurface.BuildNavMesh();
+        }
+
+        int enemySpawnAttempts = 0;
+        while (enemySpawnAttempts < 5)
+        {
+            int rx = Random.Range(0, width);
+            int ry = Random.Range(0, height);
+
+            if (maze[rx, ry] == 0)
+            {
+                Vector3 spawnPos = new Vector3(rx * cellSize, 1f, ry * cellSize);
+                Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+                enemySpawnAttempts++;
             }
         }
     }
@@ -115,45 +146,5 @@ public class MazeGenerator : MonoBehaviour
         maze = new int[width, height];
         GenerateMazeLogic();
         BuildMazeInScene();
-        SpawnEnemies();
     }
-
-    void SpawnEnemies()
-    {
-        if (enemyPrefab == null) return;
-
-        // 1. Создаем список для хранения всех пустых координат
-        List<Vector2Int> emptyCells = new List<Vector2Int>();
-
-        // 2. Проходимся по всему лабиринту и ищем проходы (нули)
-        for (int x = 1; x < width - 1; x++)
-        {
-            for (int y = 1; y < height - 1; y++)
-            {
-                if (maze[x, y] == 0)
-                {
-                    // Исключаем стартовую клетку игрока (1, 1), чтобы враг не убил его сразу
-                    if (x == 1 && y == 1) continue; 
-                    
-                    emptyCells.Add(new Vector2Int(x, y));
-                }
-            }
-        }
-
-        for (int i = 0; i < enemiesCount; i++)
-        {
-            if (emptyCells.Count == 0) break;
-
-            int randomIndex = Random.Range(0, emptyCells.Count);
-            Vector2Int cell = emptyCells[randomIndex];
-            
-            emptyCells.RemoveAt(randomIndex); 
-
-            Vector3 spawnPosition = new Vector3(cell.x * cellSize, 1.0f, cell.y * cellSize);
-
-            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-            enemy.transform.parent = this.transform; 
-        }
-    }
-
 }
