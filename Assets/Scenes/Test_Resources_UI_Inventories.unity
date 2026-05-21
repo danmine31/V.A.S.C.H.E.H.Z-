@@ -152,6 +152,7 @@ MonoBehaviour:
   attackCursor: {fileID: 2800000, guid: 58c2bae1487f2de418350b6c614e349e, type: 3}
   gatherCursor: {fileID: 2800000, guid: 965e959dab625eb4885aa920cc2cb117, type: 3}
   lootCursor: {fileID: 2800000, guid: 451cb0e147123e94ba7f75d7098a18e2, type: 3}
+  arrowCursor: {fileID: 2800000, guid: 0362ef8a62daefa4085ef6d1f09d5137, type: 3}
   interactableLayers:
     serializedVersion: 2
     m_Bits: 448
@@ -375,31 +376,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[0].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[1].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[2].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[3].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[4].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[5].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7791035743885861910, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
       propertyPath: slots.Array.data[6].amount
@@ -1283,7 +1284,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: NameText
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1626,11 +1627,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6389214405525744603, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: slots.Array.data[0].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 6389214405525744603, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: slots.Array.data[1].amount
-      value: 156
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 6389214405525744603, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: slots.Array.data[0].itemType
@@ -1690,7 +1691,7 @@ PrefabInstance:
       objectReference: {fileID: 2066456590}
     - target: {fileID: 8686675235630871369, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: m_VersionIndex
-      value: 5011
+      value: 5017
       objectReference: {fileID: 0}
     - target: {fileID: 8994604601533140577, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
       propertyPath: m_Mesh
@@ -2092,7 +2093,7 @@ PrefabInstance:
       objectReference: {fileID: 1149573508}
     - target: {fileID: 761640189177185825, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
       propertyPath: m_VersionIndex
-      value: 5002
+      value: 5005
       objectReference: {fileID: 0}
     - target: {fileID: 1067326276213062409, guid: 85ad77ef0e3513b44b9590a80aadbd3d, type: 3}
       propertyPath: m_Mesh
@@ -2706,7 +2707,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Ammo Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3138,7 +3139,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Stats Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3253,7 +3254,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 240, y: 240}
+  m_SizeDelta: {x: 235, y: 235}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1450821353
 MonoBehaviour:
@@ -3268,7 +3269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4445,7 +4446,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Medkit Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

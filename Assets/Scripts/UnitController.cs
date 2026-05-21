@@ -113,11 +113,6 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public void SetSelected(bool isSelected)
-    {
-
-    }
-
     public void MoveTo(Vector3 point)
     {
         if (autoPilot != null) autoPilot.isManualControl = true;
