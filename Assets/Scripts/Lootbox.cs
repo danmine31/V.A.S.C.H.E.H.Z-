@@ -24,6 +24,25 @@ public class LootBox : MonoBehaviour
     [Header("Содержимое сундука")]
     public List<LootItem> boxContents = new List<LootItem>();
 
+    private void OnValidate()
+    {
+        if (boxContents != null)
+        {
+            if (boxContents.Count > maxSlots)
+            {
+                boxContents.RemoveRange(maxSlots, boxContents.Count - maxSlots);
+            }
+
+            foreach (var item in boxContents)
+            {
+                if (item.amount > maxStackSize)
+                {
+                    item.amount = maxStackSize;
+                }
+            }
+        }
+    }
+
     void Start()
     {
         Collider col = GetComponent<Collider>();

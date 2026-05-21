@@ -18,6 +18,25 @@ public class UnitInventory : MonoBehaviour
 
     public bool IsFull => slots.Count >= maxSlots;
 
+    private void OnValidate()
+    {
+        if (slots != null)
+        {
+            if (slots.Count > maxSlots)
+            {
+                slots.RemoveRange(maxSlots, slots.Count - maxSlots);
+            }
+
+            foreach (var slot in slots)
+            {
+                if (slot.amount > maxStackSize)
+                {
+                    slot.amount = maxStackSize;
+                }
+            }
+        }
+    }
+
     public void AddResource(ItemType type, int amount)
     {
         foreach (var slot in slots)
