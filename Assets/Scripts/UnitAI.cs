@@ -190,7 +190,7 @@ public class UnitAI : MonoBehaviour
 
             if (projectile != null)
             {
-                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration);
+                projectile.Setup(target, finalDamage, myStats.unitFraction, myStats.armorPenetration);
             }
             nextAttackTime = Time.time + myStats.attackSpeed;
         }
