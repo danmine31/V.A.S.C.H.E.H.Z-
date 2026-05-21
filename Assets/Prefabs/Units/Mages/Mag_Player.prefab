@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6666307596427365313, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: m_VersionIndex
-      value: 4981
+      value: 4984
       objectReference: {fileID: 0}
     - target: {fileID: 1215296322497119636, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: teamID
@@ -23,6 +23,18 @@ PrefabInstance:
     - target: {fileID: 1215296322497119636, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: maxHealth
       value: 67
+      objectReference: {fileID: 0}
+    - target: {fileID: 3556011715187422120, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.81215
+      objectReference: {fileID: 0}
+    - target: {fileID: 3556011715187422120, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.0000027
+      objectReference: {fileID: 0}
+    - target: {fileID: 3556011715187422120, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3556011715187422120, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -54,6 +66,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4298771440659744478, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       insertIndex: -1
       addedObject: {fileID: -976578155759988569}
+    - targetCorrespondingSourceObject: {fileID: 4298771440659744478, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2614423499047158712}
   m_SourcePrefab: {fileID: 100100000, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
 --- !u!1 &6942734561409155496 stripped
 GameObject:
@@ -74,7 +89,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitController
   gatherRange: 2.5
   gatherCooldown: 1.5
-  selectedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!33 &-976578155759988569
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -83,3 +97,15 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6942734561409155496}
   m_Mesh: {fileID: 0}
+--- !u!114 &2614423499047158712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6942734561409155496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e07115e53f52ca24eb40657e0fb5d656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazePathFixer

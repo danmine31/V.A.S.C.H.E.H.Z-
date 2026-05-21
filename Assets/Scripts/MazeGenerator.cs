@@ -15,6 +15,7 @@ public class MazeGenerator : MonoBehaviour
 
     [Header("Враги")]
     public GameObject enemyPrefab;
+    public List<GameObject> spawnedEnemies = new List<GameObject>();
     public int enemiesCount = 3;
 
     private int[,] maze;
@@ -64,6 +65,17 @@ public class MazeGenerator : MonoBehaviour
 
     void BuildMazeInScene() 
     {
+        if (spawnedEnemies != null) 
+        {
+            foreach(var enemy in spawnedEnemies) 
+            {
+                if (enemy != null) 
+                {
+                    Destroy(enemy);
+                }
+            }
+            spawnedEnemies.Clear();
+        }
         GameObject floorObj = null;
 
         if (floorPrefab != null) 
@@ -112,7 +124,7 @@ public class MazeGenerator : MonoBehaviour
         }
 
         int enemySpawnAttempts = 0;
-        while (enemySpawnAttempts < 5)
+        while (enemySpawnAttempts < enemiesCount) 
         {
             int rx = Random.Range(0, width);
             int ry = Random.Range(0, height);
@@ -120,7 +132,18 @@ public class MazeGenerator : MonoBehaviour
             if (maze[rx, ry] == 0)
             {
                 Vector3 spawnPos = new Vector3(rx * cellSize, 1f, ry * cellSize);
-                Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+                
+                GameObject newEnemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+                UnitStats stats = newEnemy.GetComponent<UnitStats>();
+                if (stats != null)
+                {
+                    stats.teamID = 2;
+                }
+                
+                spawnedEnemies.Add(newEnemy);
+                newEnemy.transform.parent = this.transform; 
+                
                 enemySpawnAttempts++;
             }
         }

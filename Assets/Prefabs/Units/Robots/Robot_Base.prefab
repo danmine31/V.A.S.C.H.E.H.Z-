@@ -97,6 +97,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8062330763763847126, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
       insertIndex: 3
       addedObject: {fileID: 8736106651949867967}
+    - targetCorrespondingSourceObject: {fileID: 8062330763763847126, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5662533851849856048}
   m_SourcePrefab: {fileID: 100100000, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
 --- !u!4 &7250442811802394431 stripped
 Transform:
@@ -186,3 +189,17 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5662533851849856048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8557494680960947998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e96fa69e68b1045856cac7a0938d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitController
+  gatherRange: 2.5
+  gatherCooldown: 1.5

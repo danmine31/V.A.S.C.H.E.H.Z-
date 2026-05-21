@@ -31,6 +31,14 @@ public class MazePatrol : MonoBehaviour
                 timer = 0;
             }
         }
+        Collider[] hits = Physics.OverlapSphere(transform.position, 5f);
+        foreach(var hit in hits) {
+            UnitStats stats = hit.GetComponentInParent<UnitStats>();
+            if (stats != null && stats.teamID == 1) {
+                GetComponent<UnitController>().SetTarget(stats.GetComponent<Health>());
+                break;
+            }
+        }
     }
 
     void SetNewPatrolDestination()
