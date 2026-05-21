@@ -21,6 +21,12 @@ public class UnitController : MonoBehaviour
         unitRenderer = GetComponentInChildren<Renderer>(); 
         autoPilot = GetComponent<UnitAI>();
         inventory = GetComponent<UnitInventory>();
+        
+        UnitStats stats = GetComponent<UnitStats>();
+        if (stats != null && agent != null)
+        {
+            agent.speed = stats.moveSpeed;
+        }
     }
 
     void Update()

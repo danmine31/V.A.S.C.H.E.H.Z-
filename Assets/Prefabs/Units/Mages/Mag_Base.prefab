@@ -8,6 +8,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: teamID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: ownerID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: maxDamage
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: maxHealth
+      value: 67
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: minDamage
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: attackSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: unitColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: unitColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: unitColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4942405185864518812, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
       propertyPath: maxHealth
       value: 67
@@ -20,6 +56,14 @@ PrefabInstance:
       propertyPath: firePoint
       value: 
       objectReference: {fileID: 3023224427931406079}
+    - target: {fileID: 5602400923934735514, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: aggroRadius
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602400923934735514, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: attackRange
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5602400923934735514, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
       propertyPath: bulletPrefab
       value: 

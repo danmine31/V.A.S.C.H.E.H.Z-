@@ -58,7 +58,7 @@ public class Health : MonoBehaviour
         if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
     }
 
-    public void TakeDamage(float amount, Fraction attackerFraction, float armorPenetration = 0f)
+    public void TakeDamage(float amount, UnitStats attacker, float armorPenetration = 0f)
     {
         if (stats != null)
         {
@@ -71,8 +71,10 @@ public class Health : MonoBehaviour
 
         float finalDamage = amount;
 
-        if (stats != null)
+        if (stats != null && attacker != null)
         {
+            Fraction attackerFraction = attacker.unitFraction;
+
             if (attackerFraction == Fraction.Mages && stats.unitFraction == Fraction.People)
                 finalDamage *= 1.5f;
             if (attackerFraction == Fraction.People && stats.unitFraction == Fraction.Robots)

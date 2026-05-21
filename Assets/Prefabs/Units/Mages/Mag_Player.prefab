@@ -12,6 +12,62 @@ PrefabInstance:
       propertyPath: m_VersionIndex
       value: 4984
       objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: teamID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: ownerID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: unitColor.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: unitColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: unitColor.r
+      value: 0.00000011920929
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[0].amount
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[1].amount
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[2].amount
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[3].amount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[0].itemType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[1].itemType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[2].itemType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: slots.Array.data[3].itemType
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1215296322497119636, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: teamID
       value: 1

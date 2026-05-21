@@ -5,14 +5,15 @@ public class Projectile : MonoBehaviour
     public float speed = 20f;
     private float damage;
     private Health target;
-    private Fraction attackerFraction;
+    
+    private UnitStats attackerStats;
     private float armorPen;
 
-    public void Setup(Health enemyTarget, float bulletDamage, Fraction fraction, float penetration)
+    public void Setup(Health enemyTarget, float bulletDamage, UnitStats attacker, float penetration)
     {
         target = enemyTarget;
         damage = bulletDamage;
-        attackerFraction = fraction;
+        attackerStats = attacker;
         armorPen = penetration;
         Destroy(gameObject, 5f);
     }
@@ -26,7 +27,7 @@ public class Projectile : MonoBehaviour
 
         if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
         {
-            target.TakeDamage(damage, attackerFraction, armorPen);
+            target.TakeDamage(damage, attackerStats, armorPen);
             Destroy(gameObject);
         }
     }

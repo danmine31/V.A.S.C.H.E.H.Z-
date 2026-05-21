@@ -35,6 +35,11 @@ public class UnitAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
         myStats = GetComponent<UnitStats>();
+
+        if (myStats != null && agent != null)
+        {
+            agent.speed = myStats.moveSpeed;
+        }
         
         startPosition = transform.position;
         RadiusVisualizer visualizer = GetComponent<RadiusVisualizer>();
@@ -185,12 +190,14 @@ public class UnitAI : MonoBehaviour
             bool isCrit = Random.Range(0f, 100f) <= myStats.critChance;
             float finalDamage = isCrit ? roll * myStats.critMultiplier : roll;
 
+            if (isCrit) Debug.Log($"<color=red>КРИТ! {myStats.unitName} бьет на {finalDamage} урона!</color>");
+
             GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             Projectile projectile = bulletObj.GetComponent<Projectile>();
 
             if (projectile != null)
             {
-                projectile.Setup(target, finalDamage, myStats.unitFraction, myStats.armorPenetration);
+                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration);
             }
             nextAttackTime = Time.time + myStats.attackSpeed;
         }

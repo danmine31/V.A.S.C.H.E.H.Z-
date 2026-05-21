@@ -18,6 +18,9 @@ public class UnitStats : MonoBehaviour
     public float selectionCircleRadius = 1.5f;
     private GameObject selectionCircleObj;
 
+    [Header("Перемещение")]
+    public float moveSpeed = 5f;
+    
     [Header("ХП и Диапазон урона")]
     public float maxHealth = 100f;
     public float minDamage = 8f;
@@ -33,7 +36,6 @@ public class UnitStats : MonoBehaviour
     [Tooltip("Параметры атаки")]
     public float attackSpeed = 1f;
     public float attackRange = 10f;
-    
 
     [Header("Защита")]
     public float armor = 2f;
