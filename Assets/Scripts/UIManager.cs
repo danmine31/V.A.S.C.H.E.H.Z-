@@ -66,8 +66,16 @@ public class UIManager : MonoBehaviour
                 int ammoCount = inventory.GetItemCount(ItemType.Ammo);
                 int medkitCount = inventory.GetItemCount(ItemType.Medkit);
                 
-                if (ammoText != null) ammoText.text = $"Патроны: {ammoCount}";
-                if (medkitText != null) medkitText.text = $"Аптечки: {medkitCount}";
+                if (isOwnUnit)
+                {
+                    if (ammoText != null) ammoText.text = $"Патроны: {ammoCount}";
+                    if (medkitText != null) medkitText.text = $"Аптечки: {medkitCount}";
+                }
+                else
+                {
+                    if (ammoText != null) ammoText.text = "";
+                    if (medkitText != null) medkitText.text = "";
+                }
                 
                 if (healButton != null) healButton.interactable = (isOwnUnit && medkitCount > 0);
                 if (inventoryButton != null) inventoryButton.interactable = isOwnUnit;
