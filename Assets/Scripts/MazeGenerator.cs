@@ -139,6 +139,7 @@ public class MazeGenerator : MonoBehaviour
                 if (stats != null)
                 {
                     stats.teamID = 2;
+                    stats.ownerID = 2;
                 }
                 
                 spawnedEnemies.Add(newEnemy);
