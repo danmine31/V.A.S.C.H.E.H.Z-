@@ -58,8 +58,17 @@ public class Health : MonoBehaviour
         if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
     }
 
-    public void TakeDamage(float amount, Fraction attackerFraction)
+    public void TakeDamage(float amount, Fraction attackerFraction, float armorPenetration = 0f)
     {
+        if (stats != null)
+        {
+            if (Random.Range(0f, 100f) <= stats.dodgeChance)
+            {
+                Debug.Log($"<color=cyan>{stats.unitName} уклонился от атаки!</color>");
+                return; 
+            }
+        }
+
         float finalDamage = amount;
 
         if (stats != null)
@@ -70,6 +79,11 @@ public class Health : MonoBehaviour
                 finalDamage *= 1.5f;
             if (attackerFraction == Fraction.Robots && stats.unitFraction == Fraction.Mages)
                 finalDamage *= 1.5f;
+
+            float effectiveArmor = Mathf.Max(0, stats.armor - armorPenetration);
+            finalDamage -= effectiveArmor;
+            
+            if (finalDamage < 1f) finalDamage = 1f;
         }
 
         currentHealth -= finalDamage;

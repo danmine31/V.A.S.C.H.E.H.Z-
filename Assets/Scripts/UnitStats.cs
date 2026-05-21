@@ -18,11 +18,28 @@ public class UnitStats : MonoBehaviour
     public float selectionCircleRadius = 1.5f;
     private GameObject selectionCircleObj;
 
-    [Header("Боевые характеристики")]
+    [Header("ХП и Диапазон урона")]
     public float maxHealth = 100f;
-    public float damage = 10f;
+    public float minDamage = 8f;
+    public float maxDamage = 12f;
+    
+    [Tooltip("Шанс крита в процентах (0-100)")]
+    public float critChance = 15f; 
+    public float critMultiplier = 2.0f;
+
+    [Tooltip("Игнорирование брони цели")]
+    public float armorPenetration = 0f;
+
+    [Tooltip("Параметры атаки")]
     public float attackSpeed = 1f;
-    public float armor = 0f;
+    public float attackRange = 10f;
+    
+
+    [Header("Защита")]
+    public float armor = 2f;
+
+    [Tooltip("Шанс уворота от атаки в процентах (0-100)")]
+    public float dodgeChance = 10f;
 
     [Header("Регенерация")]
     public bool canRegen = true;

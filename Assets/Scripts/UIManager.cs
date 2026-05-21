@@ -58,7 +58,15 @@ public class UIManager : MonoBehaviour
             if (health != null)
             {
                 if (unitNameText != null) unitNameText.text = displayStats.unitName;
-                if (statsText != null) statsText.text = $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\nУрон: {displayStats.damage}";
+                if (statsText != null) 
+                {
+                    statsText.text = 
+                        $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\n" +
+                        $"Урон: {displayStats.minDamage}-{displayStats.maxDamage} | Пробой: {displayStats.armorPenetration}\n" +
+                        $"Крит: {displayStats.critChance}% (x{displayStats.critMultiplier})\n" +
+                        $"Броня: {displayStats.armor} | Уворот: {displayStats.dodgeChance}%\n" +
+                        $"Дальность: {displayStats.attackRange}";
+                }
             }
 
             if (inventory != null)

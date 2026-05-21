@@ -124,10 +124,20 @@ MonoBehaviour:
   ownerID: 1
   teamID: 1
   unitColor: {r: 0.00000011920929, g: 0, b: 1, a: 0}
+  selectionCircleRadius: 1.5
   maxHealth: 100
-  damage: 10
-  attackSpeed: 1
+  minDamage: 8
+  maxDamage: 12
+  critChance: 10
+  critMultiplier: 2
+  armorPenetration: 0
+  attackSpeed: 10
+  attackRange: 10
   armor: 0
+  dodgeChance: 10
+  canRegen: 1
+  regenTickRate: 2
+  regenPercentPerTick: 1
   level: 1
   currentXP: 0
 --- !u!114 &5602400923934735514

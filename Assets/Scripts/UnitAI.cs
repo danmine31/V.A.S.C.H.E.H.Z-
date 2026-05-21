@@ -16,7 +16,6 @@ public class UnitAI : MonoBehaviour
     public float patrolRadius = 10f;
 
     [Header("Стрельба")]
-    public float attackSpeed = 1f;
     public GameObject bulletPrefab;
     public Transform firePoint;
     private float nextAttackTime;
@@ -182,14 +181,18 @@ public class UnitAI : MonoBehaviour
 
             if (bulletPrefab == null || firePoint == null) return;
 
+            float roll = Random.Range(myStats.minDamage, myStats.maxDamage);
+            bool isCrit = Random.Range(0f, 100f) <= myStats.critChance;
+            float finalDamage = isCrit ? roll * myStats.critMultiplier : roll;
+
             GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             Projectile projectile = bulletObj.GetComponent<Projectile>();
 
             if (projectile != null)
             {
-                projectile.Setup(target, myStats.damage, myStats.unitFraction);
+                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration);
             }
-            nextAttackTime = Time.time + attackSpeed; 
+            nextAttackTime = Time.time + myStats.attackSpeed;
         }
     }
 
