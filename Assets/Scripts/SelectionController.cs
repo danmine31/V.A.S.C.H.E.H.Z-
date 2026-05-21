@@ -285,7 +285,21 @@ public class SelectionController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 1000f, groundLayer))
         {
-            foreach (var unit in selectedUnits) unit.MoveTo(hit.point);
+            for (int i = 0; i < selectedUnits.Count; i++)
+            {
+                if (i == 0) 
+                {
+                    selectedUnits[i].MoveTo(hit.point); 
+                }
+                else 
+                {
+                    float angle = i * 137.5f * Mathf.Deg2Rad; 
+                    float radius = 1.5f * Mathf.Sqrt(i); 
+                    
+                    Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
+                    selectedUnits[i].MoveTo(hit.point + offset);
+                }
+            }
         }
     }
 
@@ -296,6 +310,11 @@ public class SelectionController : MonoBehaviour
         {
             vis.ToggleRadiuses(visible);
         }
+    }
+
+    public List<UnitController> GetSelectedUnits()
+    {
+        return selectedUnits;
     }
 
     public UnitController GetMainSelectedUnit()

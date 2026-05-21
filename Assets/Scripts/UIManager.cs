@@ -71,13 +71,23 @@ public class UIManager : MonoBehaviour
 
             if (inventory != null)
             {
-                int ammoCount = inventory.GetItemCount(ItemType.Ammo);
-                int medkitCount = inventory.GetItemCount(ItemType.Medkit);
+                int totalAmmo = 0;
+                int totalMedkits = 0;
+
+                foreach (var unit in SelectionController.Instance.GetSelectedUnits())
+                {
+                    UnitInventory inv = unit.GetComponent<UnitInventory>();
+                    if (inv != null)
+                    {
+                        totalAmmo += inv.GetItemCount(ItemType.Ammo);
+                        totalMedkits += inv.GetItemCount(ItemType.Medkit);
+                    }
+                }
                 
                 if (isOwnUnit)
                 {
-                    if (ammoText != null) ammoText.text = $"Патроны: {ammoCount}";
-                    if (medkitText != null) medkitText.text = $"Аптечки: {medkitCount}";
+                    if (ammoText != null) ammoText.text = $"Патроны: {totalAmmo}";
+                    if (medkitText != null) medkitText.text = $"Аптечки: {totalMedkits}";
                 }
                 else
                 {
@@ -85,7 +95,7 @@ public class UIManager : MonoBehaviour
                     if (medkitText != null) medkitText.text = "";
                 }
                 
-                if (healButton != null) healButton.interactable = (isOwnUnit && medkitCount > 0);
+                if (healButton != null) healButton.interactable = (isOwnUnit && totalMedkits > 0);
                 if (inventoryButton != null) inventoryButton.interactable = isOwnUnit;
             }
             else

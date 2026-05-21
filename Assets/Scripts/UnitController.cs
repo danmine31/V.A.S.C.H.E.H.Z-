@@ -77,10 +77,18 @@ public class UnitController : MonoBehaviour
         {
             if (autoPilot != null && autoPilot.isManualControl)
             {
-                if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                if (!agent.pathPending)
                 {
-                    autoPilot.isManualControl = false;
-                    autoPilot.SetBasePosition(transform.position);
+                    bool reachedExactly = agent.remainingDistance <= agent.stoppingDistance;
+                    
+                    bool stuckInCrowd = agent.remainingDistance <= 2.5f && agent.velocity.sqrMagnitude < 0.1f;
+
+                    if (reachedExactly || stuckInCrowd)
+                    {
+                        autoPilot.isManualControl = false;
+                        agent.isStopped = true;
+                        autoPilot.SetBasePosition(transform.position);
+                    }
                 }
             }
         }
