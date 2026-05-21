@@ -35,22 +35,30 @@ public class UIManager : MonoBehaviour
         if (SelectionController.Instance == null) return;
         
         UnitController selectedUnit = SelectionController.Instance.GetMainSelectedUnit();
+        UnitStats inspectedUnit = SelectionController.Instance.GetInspectedUnit();
+
+        bool isOwnUnit = (selectedUnit != null);
+
+        UnitStats displayStats = null;
+        if (selectedUnit != null) 
+            displayStats = selectedUnit.GetComponent<UnitStats>();
+        else 
+            displayStats = SelectionController.Instance.GetInspectedUnit();
 
         if (bottomHUD != null && !bottomHUD.activeSelf) 
             bottomHUD.SetActive(true);
 
-        if (selectedUnit != null)
+        if (displayStats != null)
         {
-            UnitStats stats = selectedUnit.GetComponent<UnitStats>();
-            Health health = selectedUnit.GetComponent<Health>();
-            UnitInventory inventory = selectedUnit.GetComponent<UnitInventory>();
+            Health health = displayStats.GetComponent<Health>();
+            UnitInventory inventory = displayStats.GetComponent<UnitInventory>();
 
             if (portraitImage != null) portraitImage.enabled = true;
 
-            if (stats != null && health != null)
+            if (health != null)
             {
-                if (unitNameText != null) unitNameText.text = stats.unitName;
-                if (statsText != null) statsText.text = $"ХП: {Mathf.Round(health.currentHealth)} / {stats.maxHealth}\nУрон: {stats.damage}";
+                if (unitNameText != null) unitNameText.text = displayStats.unitName;
+                if (statsText != null) statsText.text = $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\nУрон: {displayStats.damage}";
             }
 
             if (inventory != null)
@@ -61,8 +69,8 @@ public class UIManager : MonoBehaviour
                 if (ammoText != null) ammoText.text = $"Патроны: {ammoCount}";
                 if (medkitText != null) medkitText.text = $"Аптечки: {medkitCount}";
                 
-                if (healButton != null) healButton.interactable = (medkitCount > 0);
-                if (inventoryButton != null) inventoryButton.interactable = true;
+                if (healButton != null) healButton.interactable = (isOwnUnit && medkitCount > 0);
+                if (inventoryButton != null) inventoryButton.interactable = isOwnUnit;
             }
             else
             {

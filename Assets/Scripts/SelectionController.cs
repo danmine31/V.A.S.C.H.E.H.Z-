@@ -15,6 +15,8 @@ public class SelectionController : MonoBehaviour
     private bool startedClickOnUI = false;
     public static bool isRadiusesVisible = false;
 
+    private UnitStats inspectedUnit;
+
     public static SelectionController Instance;
 
     void Awake()
@@ -127,25 +129,51 @@ public class SelectionController : MonoBehaviour
         selectionBoxVisual.anchoredPosition = startMousePos + new Vector2(width / 2, height / 2);
     }
 
+    void ClearInspected()
+    {
+        if (inspectedUnit != null)
+        {
+            inspectedUnit.SetSelected(false);
+            inspectedUnit = null;
+        }
+    }
+
     void SelectSingleUnit()
     {
         selectedUnits.RemoveAll(u => u == null);
-        foreach (var unit in selectedUnits) unit.SetSelected(false);
+        foreach (var unit in selectedUnits) unit.GetComponent<UnitStats>().SetSelected(false);
         selectedUnits.Clear();
+
+        if (inspectedUnit != null)
+        {
+            inspectedUnit.SetSelected(false);
+            inspectedUnit = null;
+        }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 1000f, unitLayer))
         {
-            UnitController unit = hit.collider.GetComponentInParent<UnitController>();
             UnitStats stats = hit.collider.GetComponentInParent<UnitStats>();
 
-            if (unit != null && stats != null && stats.ownerID == 1)
+            if (stats != null)
             {
-                selectedUnits.Add(unit);
-                unit.SetSelected(true);
-                Debug.Log($"<color=cyan>Одиночный клик: {stats.unitName} добавлен в отряд!</color>");
+                if (stats.ownerID == 1)
+                {
+                    UnitController controller = stats.GetComponent<UnitController>();
+                    if (controller != null)
+                    {
+                        selectedUnits.Add(controller);
+                        stats.SetSelected(true);
+                    }
+                }
+                else
+                {
+                    inspectedUnit = stats;
+                    stats.SetSelected(true);
+                    Debug.Log($"<color=yellow>Осмотр: {stats.unitName}</color>");
+                }
             }
         }
     }
@@ -153,8 +181,14 @@ public class SelectionController : MonoBehaviour
     void SelectUnitsInBox()
     {
         selectedUnits.RemoveAll(u => u == null);
-        foreach (var unit in selectedUnits) unit.SetSelected(false);
+        foreach (var unit in selectedUnits) unit.GetComponent<UnitStats>().SetSelected(false);
         selectedUnits.Clear();
+        
+        if (inspectedUnit != null)
+        {
+            inspectedUnit.SetSelected(false);
+            inspectedUnit = null;
+        }
 
         Rect selectionRect = new Rect(
             Mathf.Min(startMousePos.x, Input.mousePosition.x),
@@ -163,18 +197,38 @@ public class SelectionController : MonoBehaviour
             Mathf.Abs(startMousePos.y - Input.mousePosition.y)
         );
 
-        var allUnits = Object.FindObjectsByType<UnitController>(FindObjectsInactive.Exclude);
-        foreach (UnitController unit in allUnits)
+        var allStats = Object.FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude);
+        
+        foreach (UnitStats stats in allStats)
         {
-            UnitStats stats = unit.GetComponent<UnitStats>();
-            
-            if (stats != null && stats.ownerID == 1)
+            if (stats.ownerID == 1)
             {
-                Vector2 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
-                if (selectionRect.Contains(screenPos))
+                UnitController controller = stats.GetComponent<UnitController>();
+                if (controller != null)
                 {
-                    selectedUnits.Add(unit);
-                    unit.SetSelected(true);
+                    Vector2 screenPos = Camera.main.WorldToScreenPoint(stats.transform.position);
+                    if (selectionRect.Contains(screenPos))
+                    {
+                        selectedUnits.Add(controller);
+                        stats.SetSelected(true);
+                    }
+                }
+            }
+        }
+
+        if (selectedUnits.Count == 0)
+        {
+            foreach (UnitStats stats in allStats)
+            {
+                if (stats.ownerID != 1)
+                {
+                    Vector2 screenPos = Camera.main.WorldToScreenPoint(stats.transform.position);
+                    if (selectionRect.Contains(screenPos))
+                    {
+                        inspectedUnit = stats;
+                        stats.SetSelected(true);
+                        break;
+                    }
                 }
             }
         }
@@ -204,15 +258,18 @@ public class SelectionController : MonoBehaviour
         {
             Health enemyHealth = hit.collider.GetComponentInParent<Health>();
             UnitStats enemyStats = hit.collider.GetComponentInParent<UnitStats>();
+            UnitController enemyController = hit.collider.GetComponentInParent<UnitController>();
 
             if (enemyHealth != null && enemyStats != null)
             {
                 if (enemyStats.teamID != 1) 
                 {
-                    foreach (var unit in selectedUnits) unit.SetTarget(enemyHealth);
+                    foreach (var unit in selectedUnits) 
+                    {
+                        unit.SetTarget(enemyHealth);
+                    }
                     return;
                 }
-                else return;
             }
         }
 
@@ -248,5 +305,10 @@ public class SelectionController : MonoBehaviour
             return selectedUnits[0];
         }
         return null;
+    }
+
+    public UnitStats GetInspectedUnit()
+    {
+        return inspectedUnit;
     }
 }
