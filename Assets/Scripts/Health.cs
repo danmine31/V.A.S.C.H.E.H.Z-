@@ -4,7 +4,7 @@ public class Health : MonoBehaviour
 {
     private UnitStats stats;
 
-    [Header("Прочность (для неживых объектов)")]
+    [Header("Прочность")]
     public float maxHealth = 100f; 
     public float currentHealth;
 
@@ -12,19 +12,14 @@ public class Health : MonoBehaviour
     public GameObject healthBarPrefab;
     [HideInInspector] public HealthBar healthBar;
 
+    private float regenTimer = 0f;
+
     void Start()
     {
         stats = GetComponent<UnitStats>();
 
-        if (stats != null)
-        {
-            maxHealth = stats.maxHealth;
-        }
-
-        if (currentHealth == 0) 
-        {
-            currentHealth = maxHealth;
-        }
+        if (stats != null) maxHealth = stats.maxHealth;
+        if (currentHealth == 0) currentHealth = maxHealth;
 
         if (healthBarPrefab != null)
         {
@@ -36,6 +31,31 @@ public class Health : MonoBehaviour
                 healthBar.UpdateHealthBar(currentHealth, maxHealth);
             }
         }
+    }
+
+    void Update()
+    {
+        if (stats != null && stats.canRegen && currentHealth < maxHealth && currentHealth > 0)
+        {
+            regenTimer += Time.deltaTime;
+            
+            if (regenTimer >= stats.regenTickRate)
+            {
+                float healAmount = maxHealth * (stats.regenPercentPerTick / 100f);
+                Heal(healAmount);
+                regenTimer = 0f;
+            }
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        if (currentHealth <= 0) return;
+
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+
+        if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
     }
 
     public void TakeDamage(float amount, Fraction attackerFraction)

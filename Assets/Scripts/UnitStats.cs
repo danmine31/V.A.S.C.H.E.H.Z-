@@ -24,6 +24,12 @@ public class UnitStats : MonoBehaviour
     public float attackSpeed = 1f;
     public float armor = 0f;
 
+    [Header("Регенерация")]
+    public bool canRegen = true;
+    public float regenTickRate = 2f;
+    [Tooltip("Процент от Max HP, который восстанавливается за тик")]
+    public float regenPercentPerTick = 1f;
+
     [Header("Прокачка")]
     public int level = 1;
     public float currentXP = 0f;
