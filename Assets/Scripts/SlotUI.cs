@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public enum SlotPanelType { Inventory, LootBox }
 
@@ -44,7 +45,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
             bool isShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
             if (panelType == SlotPanelType.LootBox)
-                TransferFromLootToInventory(isShiftPressed);
+                TransferFromLootToInventory(isShiftPressed, true);
             else if (panelType == SlotPanelType.Inventory)
                 TransferFromInventoryToLoot(isShiftPressed);
         }
@@ -96,7 +97,7 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         {
             if (draggedSlot.panelType == SlotPanelType.LootBox && targetSlot.panelType == SlotPanelType.Inventory)
             {
-                draggedSlot.TransferFromLootToInventory(true);
+                draggedSlot.TransferFromLootToInventory(true, false);
             }
             else if (draggedSlot.panelType == SlotPanelType.Inventory && targetSlot.panelType == SlotPanelType.LootBox)
             {
@@ -107,22 +108,35 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         draggedSlot = null;
     }
 
-    public void TransferFromLootToInventory(bool allStack)
+    public void TransferFromLootToInventory(bool allStack, bool distribute = false)
     {
         if (lootUI == null || lootUI.CurrentLootBox == null || selectionCtrl == null) return;
-        UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
-        if (activeUnit == null) return;
-        UnitInventory unitInv = activeUnit.GetComponent<UnitInventory>();
-        if (unitInv == null) return;
-
+        
         LootBox box = lootUI.CurrentLootBox;
         if (slotIndex >= box.boxContents.Count) return;
         var lootItem = box.boxContents[slotIndex];
 
         int amountToTransfer = allStack ? lootItem.amount : 1;
-        unitInv.AddResource(lootItem.itemType, amountToTransfer);
+        int leftover = amountToTransfer;
 
-        lootItem.amount -= amountToTransfer;
+        if (distribute)
+        {
+            List<UnitController> squad = selectionCtrl.GetSelectedUnits();
+            leftover = LootDistributor.DistributeAmongSquad(squad, lootItem.itemType, amountToTransfer);
+        }
+        else
+        {
+            UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
+            if (activeUnit != null)
+            {
+                List<UnitController> singleUnitList = new List<UnitController> { activeUnit };
+                leftover = LootDistributor.DistributeAmongSquad(singleUnitList, lootItem.itemType, amountToTransfer);
+            }
+        }
+
+        int amountTaken = amountToTransfer - leftover;
+        lootItem.amount -= amountTaken;
+
         if (lootItem.amount <= 0) box.boxContents.RemoveAt(slotIndex);
 
         lootUI.UpdateUI();

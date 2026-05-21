@@ -61,6 +61,7 @@ public class UIManager : MonoBehaviour
                 if (statsText != null) 
                 {
                     statsText.text = 
+                        $"Уровень: {displayStats.level} (Опыт: {Mathf.Round(displayStats.currentXP)} / {Mathf.Round(displayStats.GetXPForNextLevel())})\n" +
                         $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\n" +
                         $"Урон: {displayStats.minDamage}-{displayStats.maxDamage} | Пробой: {displayStats.armorPenetration}\n" +
                         $"Крит: {displayStats.critChance}% (x{displayStats.critMultiplier})\n" +

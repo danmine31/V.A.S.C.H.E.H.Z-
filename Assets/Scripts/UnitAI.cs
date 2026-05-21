@@ -217,7 +217,8 @@ public class UnitAI : MonoBehaviour
             
             if (myStats != null && targetStats != null)
             {
-                if (targetStats.teamID == myStats.teamID) continue; 
+                if (targetStats.teamID == myStats.teamID) continue;
+                if (myStats.teamID == 0 || targetStats.teamID == 0) continue; 
             }
 
             float distance = Vector3.Distance(transform.position, unitHealth.transform.position);

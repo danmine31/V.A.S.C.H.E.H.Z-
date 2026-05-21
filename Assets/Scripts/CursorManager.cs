@@ -45,7 +45,7 @@ public class CursorManager : MonoBehaviour
                         SetCursor(arrowCursor != null ? arrowCursor : defaultCursor, true);
                         return;
                     }
-                    else if (stats.teamID != 1)
+                    else if (stats.teamID != 1 && stats.teamID != 0)
                     {
                         SetCursor(attackCursor, true);
                         return;

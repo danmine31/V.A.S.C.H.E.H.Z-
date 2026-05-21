@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 public static class LootDistributor
 {
-    public static void DistributeAmongSquad(List<UnitController> squad, ItemType item, int totalAmount)
+    public static int DistributeAmongSquad(List<UnitController> squad, ItemType item, int totalAmount)
     {
         int remainingAmount = totalAmount;
-        
         bool isConsumable = (item == ItemType.Ammo || item == ItemType.Medkit || 
                              item == ItemType.Artemit || item == ItemType.Danilit || item == ItemType.Egorit);
 
@@ -51,14 +50,9 @@ public static class LootDistributor
             }
             else
             {
-                Debug.LogWarning($"<color=yellow>Инвентари отряда полны! На земле осталось: {remainingAmount} {item}</color>");
                 break;
             }
         }
-
-        if (remainingAmount == 0)
-        {
-            Debug.Log($"<color=green>Отряд успешно распределил {totalAmount} {item}!</color>");
-        }
+        return remainingAmount;
     }
 }

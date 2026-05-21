@@ -169,4 +169,46 @@ public class UnitStats : MonoBehaviour
     {
         if (selectionCircleObj != null) selectionCircleObj.SetActive(isSelected);
     }
+
+    public void AddXP(float amount)
+    {
+        currentXP += amount;
+        float xpNeeded = GetXPForNextLevel();
+        
+        while (currentXP >= xpNeeded)
+        {
+            currentXP -= xpNeeded;
+            LevelUp();
+            xpNeeded = GetXPForNextLevel();
+        }
+    }
+
+    public float GetXPForNextLevel()
+    {
+        return 100f * Mathf.Pow(1.5f, level - 1);
+    }
+
+    void LevelUp()
+    {
+        level++;
+        
+        maxHealth += 10f;
+        minDamage += 1f;
+        maxDamage += 2f;
+
+        Health h = GetComponent<Health>();
+        if (h != null)
+        {
+            h.maxHealth = maxHealth;
+            h.Heal(10f);
+            if (h.healthBar != null) h.healthBar.UpdateLevelText(level); 
+        }
+
+        if (level % 3 == 0)
+        {
+            armor += 1f;
+            armorPenetration += 1f;
+            Debug.Log($"<color=gold>{unitName} получил +1 к Броне и Пробитию за {level} уровень!</color>");
+        }
+    }
 }

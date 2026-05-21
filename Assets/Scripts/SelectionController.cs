@@ -262,12 +262,9 @@ public class SelectionController : MonoBehaviour
 
             if (enemyHealth != null && enemyStats != null)
             {
-                if (enemyStats.teamID != 1) 
+                if (enemyStats.teamID != 1 && enemyStats.teamID != 0)
                 {
-                    foreach (var unit in selectedUnits) 
-                    {
-                        unit.SetTarget(enemyHealth);
-                    }
+                    foreach (var unit in selectedUnits) unit.SetTarget(enemyHealth);
                     return;
                 }
             }

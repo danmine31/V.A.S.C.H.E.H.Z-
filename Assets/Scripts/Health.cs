@@ -1,4 +1,14 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+[System.Serializable]
+public struct DropItem
+{
+    public ItemType itemType;
+    public int minAmount;
+    public int maxAmount;
+    [Range(0f, 100f)] public float dropChance;
+}
 
 public class Health : MonoBehaviour
 {
@@ -7,6 +17,12 @@ public class Health : MonoBehaviour
     [Header("Прочность")]
     public float maxHealth = 100f; 
     public float currentHealth;
+
+    [Header("Лут при смерти/разрушении")]
+    public GameObject lootBoxPrefab;
+    public List<DropItem> dropTable = new List<DropItem>();
+
+    private Dictionary<UnitStats, float> damageContributors = new Dictionary<UnitStats, float>();
 
     [Header("UI")]
     public GameObject healthBarPrefab;
@@ -29,6 +45,8 @@ public class Health : MonoBehaviour
             {
                 healthBar.target = this.transform;
                 healthBar.UpdateHealthBar(currentHealth, maxHealth);
+                int lvl = stats != null ? stats.level : 1;
+                healthBar.UpdateLevelText(lvl);
             }
         }
     }
@@ -55,7 +73,12 @@ public class Health : MonoBehaviour
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
 
-        if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
+        if (healthBar != null) 
+        {
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+            int lvl = stats != null ? stats.level : 1;
+            healthBar.UpdateLevelText(lvl);
+        }
     }
 
     public void TakeDamage(float amount, UnitStats attacker, float armorPenetration = 0f)
@@ -88,16 +111,81 @@ public class Health : MonoBehaviour
             if (finalDamage < 1f) finalDamage = 1f;
         }
 
+        if (attacker != null && attacker.teamID != 0)
+        {
+            if (!damageContributors.ContainsKey(attacker)) damageContributors[attacker] = 0f;
+            damageContributors[attacker] += finalDamage;
+        }
+
         currentHealth -= finalDamage;
 
-        if (healthBar != null) healthBar.UpdateHealthBar(currentHealth, maxHealth);
+        if (healthBar != null) 
+        {
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+            int lvl = stats != null ? stats.level : 1;
+            healthBar.UpdateLevelText(lvl);
+        }
         
         if (currentHealth <= 0) Die();
     }
 
     void Die()
     {
+        DistributeXP();
+        SpawnLoot();
+        
         if (healthBar != null) Destroy(healthBar.gameObject);
         Destroy(gameObject);
+    }
+
+    void DistributeXP()
+    {
+        float totalDamage = 0f;
+        foreach (var dmg in damageContributors.Values) totalDamage += dmg;
+        if (totalDamage <= 0) return;
+
+        float xpReward = maxHealth;
+
+        foreach (var kvp in damageContributors)
+        {
+            if (kvp.Key != null && kvp.Key.gameObject != null)
+            {
+                float share = kvp.Value / totalDamage;
+                kvp.Key.AddXP(xpReward * share);
+            }
+        }
+    }
+
+    void SpawnLoot()
+    {
+        if (lootBoxPrefab == null || dropTable.Count == 0) return;
+
+        List<LootBox.LootItem> itemsToDrop = new List<LootBox.LootItem>();
+
+        foreach (var drop in dropTable)
+        {
+            if (Random.Range(0f, 100f) <= drop.dropChance)
+            {
+                int amount = Random.Range(drop.minAmount, drop.maxAmount + 1);
+                if (amount > 0)
+                {
+                    itemsToDrop.Add(new LootBox.LootItem { itemType = drop.itemType, amount = amount });
+                }
+            }
+        }
+
+        if (itemsToDrop.Count > 0)
+        {
+            GameObject boxObj = Instantiate(lootBoxPrefab, transform.position, Quaternion.identity);
+            LootBox box = boxObj.GetComponent<LootBox>();
+            if (box != null)
+            {
+                box.boxContents.Clear();
+                foreach (var item in itemsToDrop)
+                {
+                    box.AddItem(item.itemType, item.amount);
+                }
+            }
+        }
     }
 }
