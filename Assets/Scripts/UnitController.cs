@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum FactionType { Human, Mage, Robot }
+
 public class UnitController : MonoBehaviour
 {
     private NavMeshAgent agent;

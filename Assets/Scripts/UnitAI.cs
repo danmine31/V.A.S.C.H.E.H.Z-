@@ -29,9 +29,26 @@ public class UnitAI : MonoBehaviour
     
     private Health myHealth;
     private UnitStats myStats;
+    [Header("Принадлежность")]
+    public int teamID;
+    public FactionType faction;
+
+    [Header("Характеристики")]
+    public float baseDamage = 10f;
+    public float currentDamage;
+
+    void OnEnable()
+    {
+        EnvironmentManager.OnTimeChanged += ApplyWeatherBuffs;
+    }
+    void OnDisable()
+    {
+        EnvironmentManager.OnTimeChanged -= ApplyWeatherBuffs;
+    }
 
     void Start()
     {
+        currentDamage = baseDamage;
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
         myStats = GetComponent<UnitStats>();
@@ -234,5 +251,21 @@ public class UnitAI : MonoBehaviour
     public void SetBasePosition(Vector3 newPos)
     {
         startPosition = newPos;
+    }
+
+    void ApplyWeatherBuffs(TimeOfDay time)
+    {
+        currentDamage = baseDamage;
+
+        if (teamID == 1 && time == TimeOfDay.Night)
+        {
+            currentDamage *= 1.5f; 
+            Debug.Log("Маги усилены ночью!");
+        }
+        else if (teamID == 2 && time == TimeOfDay.Day)
+        {
+            currentDamage *= 1.5f;
+            Debug.Log("Роботы усилены днём!");
+        }
     }
 }

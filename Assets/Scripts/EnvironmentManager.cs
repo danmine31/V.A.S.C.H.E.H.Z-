@@ -16,6 +16,11 @@ public class EnvironmentManager : MonoBehaviour
     [Range(1, 5)] public int windForce = 1;
     public float windAngle = 0f;
 
+    [Header("Auto Time Settings")]
+    public bool autoTimeEnabled = true;
+    public float cycleDuration = 60f;
+    private float timeTimer = 0f;
+
     [Header("Visual References")]
     public Light directionalLight; 
     public Volume globalVolume;
@@ -46,6 +51,22 @@ public class EnvironmentManager : MonoBehaviour
         HandleTimeInput();
         HandleWeatherInput();
         HandleWindInput();
+
+        if (autoTimeEnabled)
+        {
+            timeTimer += Time.deltaTime;
+            if (timeTimer >= cycleDuration)
+            {
+                timeTimer = 0f;
+                AdvanceTime();
+            }
+        }
+    }
+
+    void AdvanceTime()
+    {
+        int nextTimePhase = ((int)currentTime + 1) % 4;
+        ChangeTime((TimeOfDay)nextTimePhase);
     }
 
     void HandleSeasonInput() {
