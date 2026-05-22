@@ -34,6 +34,10 @@ public class LocalizationManager : MonoBehaviour
                 case "btn_back": return "Назад";
                 case "lbl_volume": return "Общая громкость";
                 case "lbl_lang": return "Язык";
+                case "win_text": return "Уровень пройден!";
+                case "lose_text": return "Поражение!";
+                case "btn_restart": return "Пройти уровень снова";
+                case "btn_menu": return "В главное меню";
                 default: return key;
             }
         }
@@ -47,6 +51,10 @@ public class LocalizationManager : MonoBehaviour
                 case "btn_back": return "Back";
                 case "lbl_volume": return "Master Volume";
                 case "lbl_lang": return "Language";
+                case "win_text": return "Level completed!";
+                case "lose_text": return "Defeat!";
+                case "btn_restart": return "Restart";
+                case "btn_menu": return "Main Menu";
                 default: return key;
             }
         }
