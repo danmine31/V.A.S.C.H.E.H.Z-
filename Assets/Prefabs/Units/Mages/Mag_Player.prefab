@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: unitColor.r
       value: 0.00000011920929
       objectReference: {fileID: 0}
+    - target: {fileID: 18973381959789186, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
+      propertyPath: unitFraction
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: slots.Array.size
       value: 4

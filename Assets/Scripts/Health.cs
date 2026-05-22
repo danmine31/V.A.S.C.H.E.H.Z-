@@ -136,6 +136,14 @@ public class Health : MonoBehaviour
         
         if (healthBar != null) Destroy(healthBar.gameObject);
         Destroy(gameObject);
+        UnitController controller = GetComponent<UnitController>();
+        if (controller != null && controller.teamID == 1)
+        {
+            if (LevelManager.Instance != null)
+            {
+                LevelManager.Instance.UnregisterPlayerUnit();
+            }
+        }
     }
 
     void DistributeXP()
