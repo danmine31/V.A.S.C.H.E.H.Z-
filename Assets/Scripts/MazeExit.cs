@@ -4,9 +4,9 @@ public class MazeExit : MonoBehaviour
 {
     void OnTriggerEnter(Collider other)
     {
-        UnitController unit = other.GetComponentInParent<UnitController>();
+        UnitStats stats = other.GetComponentInParent<UnitStats>();
         
-        if (unit != null && unit.teamID == 1)
+        if (stats != null && stats.teamID == 1)
         {
             if (LevelManager.Instance != null)
             {

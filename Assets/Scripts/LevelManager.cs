@@ -30,16 +30,6 @@ public class LevelManager : MonoBehaviour
         alivePlayerUnits++;
     }
 
-    public void UnregisterPlayerUnit()
-    {
-        alivePlayerUnits--;
-        
-        if (alivePlayerUnits <= 0 && !isGameOver)
-        {
-            GameOverLose();
-        }
-    }
-
     public void GameOverWin()
     {
         if (isGameOver) return;
@@ -50,14 +40,34 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Уровень пройден!");
     }
 
+    public void UnregisterPlayerUnit()
+    {
+        alivePlayerUnits--;
+        Debug.Log("Осталось живых наших юнитов: " + alivePlayerUnits);
+        
+        if (alivePlayerUnits <= 0 && !isGameOver)
+        {
+            GameOverLose();
+        }
+    }
+
     public void GameOverLose()
     {
         if (isGameOver) return;
         isGameOver = true;
         
+        Debug.Log("ВЫЗВАН ЭКРАН ПОРАЖЕНИЯ!");
         Time.timeScale = 0f;
-        if (losePanel) losePanel.SetActive(true);
-        Debug.Log("Поражение!");
+        
+        if (losePanel != null) 
+        {
+            losePanel.SetActive(true);
+            Debug.Log("Панель поражения успешно включена в коде!");
+        }
+        else 
+        {
+            Debug.LogError("В LevelManager пустая ячейка LosePanel! Ты забыл перетащить её в Инспекторе!");
+        }
     }
 
 

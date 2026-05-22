@@ -136,12 +136,21 @@ public class Health : MonoBehaviour
         
         if (healthBar != null) Destroy(healthBar.gameObject);
         Destroy(gameObject);
-        UnitController controller = GetComponent<UnitController>();
-        if (controller != null && controller.teamID == 1)
+        UnitStats stats = GetComponent<UnitStats>();
+        if (stats == null) 
         {
-            if (LevelManager.Instance != null)
+            stats = GetComponentInParent<UnitStats>();
+        }
+
+        if (stats != null)
+        {
+            if (stats.teamID == 1)
             {
-                LevelManager.Instance.UnregisterPlayerUnit();
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.UnregisterPlayerUnit();
+                    Debug.Log($"[{gameObject.name}] Умер. Взят teamID из UnitStats. Успешно вычеркнут!");
+                }
             }
         }
     }

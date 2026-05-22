@@ -6,7 +6,6 @@ public enum FactionType { Human, Mage, Robot }
 public class UnitController : MonoBehaviour
 {
     [Header("Настройки команды")]
-    public int teamID;
     public FactionType faction;
     private NavMeshAgent agent;
     private Renderer unitRenderer;
@@ -32,9 +31,12 @@ public class UnitController : MonoBehaviour
         {
             agent.speed = stats.moveSpeed;
         }
-        if (teamID == 1 && LevelManager.Instance != null)
+        if (stats != null && stats.teamID == 1)
         {
-            LevelManager.Instance.RegisterPlayerUnit();
+            if (LevelManager.Instance != null)
+            {
+                LevelManager.Instance.RegisterPlayerUnit();
+            }
         }
     }
 
@@ -105,6 +107,7 @@ public class UnitController : MonoBehaviour
 
     void HandleResourceGathering()
     {
+        UnitStats stats = GetComponent<UnitStats>();
         if (inventory != null && inventory.IsFull)
         {
             targetResource = null;
@@ -125,7 +128,7 @@ public class UnitController : MonoBehaviour
                 if (inventory != null)
                 {
                     inventory.AddResource(targetResource.type, amount);
-                    if (teamID == 1 && targetResource.gameObject.name.ToLower().Contains("artemit"))
+                    if (stats.teamID == 1 && targetResource.gameObject.name.ToLower().Contains("artemit"))
                     {
                         if (LevelManager.Instance != null) LevelManager.Instance.GameOverWin();
                     }
