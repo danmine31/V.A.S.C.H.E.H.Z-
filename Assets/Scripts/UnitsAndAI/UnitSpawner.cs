@@ -34,6 +34,9 @@ public class UnitSpawner : MonoBehaviour
     [Header("Награда за зачистку/выживание")]
     public GameObject rewardLootBoxPrefab;
 
+    [Header("Начальный лут (перезапишет инвентарь префаба)")]
+    public List<InventorySlot> startingInventory = new List<InventorySlot>();
+
     private float timer;
     private float lifeTimer = 0f;
     private int currentSpawnedCount = 0;
@@ -101,6 +104,16 @@ public class UnitSpawner : MonoBehaviour
         if (ai != null) ai.currentBehavior = spawnBehavior;
         
         newUnit.layer = LayerMask.NameToLayer("Unit");
+
+        UnitInventory inv = newUnit.GetComponent<UnitInventory>();
+        if (inv != null && startingInventory.Count > 0)
+        {
+            inv.slots.Clear();
+            foreach (var item in startingInventory)
+            {
+                inv.AddResource(item.itemType, item.amount);
+            }
+        }
 
         if (mode == SpawnerMode.ByCount && totalSpawnLimit != -1 && currentSpawnedCount >= totalSpawnLimit)
         {

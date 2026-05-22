@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 [System.Serializable]
 public struct DropItem
@@ -14,6 +15,9 @@ public class Health : MonoBehaviour
 {
     private UnitStats stats;
 
+    [Header("Звуки")]
+    public AudioClip deathSound;
+
     [Header("Прочность")]
     public float maxHealth = 100f; 
     public float currentHealth;
@@ -27,8 +31,10 @@ public class Health : MonoBehaviour
     [Header("UI")]
     public GameObject healthBarPrefab;
     [HideInInspector] public HealthBar healthBar;
+    public GameObject floatingTextPrefab;
 
     private float regenTimer = 0f;
+    private bool isHealing = false;
 
     void Start()
     {
@@ -81,7 +87,53 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float amount, UnitStats attacker, float armorPenetration = 0f)
+    public void TryStartHealing()
+    {
+        if (isHealing || currentHealth >= maxHealth) return;
+        
+        UnitInventory inventory = GetComponent<UnitInventory>();
+        if (inventory != null && inventory.GetItemCount(ItemType.Medkit) > 0)
+        {
+            UnitAI ai = GetComponent<UnitAI>();
+            if (ai != null) ai.isManualControl = true; 
+
+            StartCoroutine(HealingProcessCoroutine(inventory, ai));
+        }
+    }
+
+    private IEnumerator HealingProcessCoroutine(UnitInventory inventory, UnitAI ai)
+    {
+        isHealing = true;
+        Debug.Log($"<color=green>{stats.unitName} лечится (5 секунд)...</color>");
+        
+        float timer = 0f;
+        Vector3 startPos = transform.position;
+
+        while (timer < 5f)
+        {
+            timer += Time.deltaTime;
+
+            if (Vector3.Distance(startPos, transform.position) > 0.5f)
+            {
+                Debug.Log($"<color=red>Лечение прервано!</color>");
+                isHealing = false;
+                if (ai != null) ai.isManualControl = false;
+                yield break;
+            }
+            yield return null; 
+        }
+
+        if (inventory != null && inventory.RemoveItem(ItemType.Medkit, 1))
+        {
+            float healAmount = maxHealth * 0.5f;
+            Heal(healAmount);
+        }
+
+        isHealing = false;
+        if (ai != null) ai.isManualControl = false;
+    }
+
+    public void TakeDamage(float amount, UnitStats attacker, float armorPenetration = 0f, bool isCrit = false)
     {
         if (stats != null)
         {
@@ -125,6 +177,12 @@ public class Health : MonoBehaviour
             int lvl = stats != null ? stats.level : 1;
             healthBar.UpdateLevelText(lvl);
         }
+
+        if (floatingTextPrefab != null)
+        {
+            GameObject textObj = Instantiate(floatingTextPrefab, transform.position + Vector3.up * 2f, Quaternion.identity);
+            textObj.GetComponent<FloatingText>().Setup(finalDamage, isCrit, false); 
+        }
         
         if (currentHealth <= 0) Die();
     }
@@ -134,25 +192,31 @@ public class Health : MonoBehaviour
         DistributeXP();
         SpawnLoot();
         
-        if (healthBar != null) Destroy(healthBar.gameObject);
-        Destroy(gameObject);
-        UnitStats stats = GetComponent<UnitStats>();
-        if (stats == null) 
+        bool playerHelpedKill = false;
+        foreach (var attacker in damageContributors.Keys)
         {
-            stats = GetComponentInParent<UnitStats>();
+            if (attacker != null && attacker.ownerID == 1) { playerHelpedKill = true; break; }
         }
 
-        if (stats != null)
+        if (playerHelpedKill && stats != null && stats.ownerID != 1 && GameManager.Instance != null)
         {
-            if (stats.teamID == 1)
-            {
-                if (LevelManager.Instance != null)
-                {
-                    LevelManager.Instance.UnregisterPlayerUnit();
-                    Debug.Log($"[{gameObject.name}] Умер. Взят teamID из UnitStats. Успешно вычеркнут!");
-                }
-            }
+            GameManager.Instance.AddInfluence(4);
         }
+
+        if (stats != null && stats.teamID == 1 && LevelManager.Instance != null)
+        {
+            LevelManager.Instance.UnregisterPlayerUnit();
+            Debug.Log($"[{gameObject.name}] Умер. Успешно вычеркнут!");
+        }
+        
+        if (healthBar != null) Destroy(healthBar.gameObject);
+
+        if (deathSound != null) 
+        {
+            AudioSource.PlayClipAtPoint(deathSound, transform.position, 1.0f);
+        }
+
+        Destroy(gameObject);
     }
 
     void DistributeXP()
@@ -175,18 +239,35 @@ public class Health : MonoBehaviour
 
     void SpawnLoot()
     {
-        if (lootBoxPrefab == null || dropTable.Count == 0) return;
+        if (lootBoxPrefab == null) return;
 
         List<LootBox.LootItem> itemsToDrop = new List<LootBox.LootItem>();
 
-        foreach (var drop in dropTable)
+        if (stats != null && stats.ownerID == 1)
         {
-            if (Random.Range(0f, 100f) <= drop.dropChance)
+            UnitInventory inv = GetComponent<UnitInventory>();
+            if (inv != null)
             {
-                int amount = Random.Range(drop.minAmount, drop.maxAmount + 1);
-                if (amount > 0)
+                foreach (var slot in inv.slots)
                 {
-                    itemsToDrop.Add(new LootBox.LootItem { itemType = drop.itemType, amount = amount });
+                    itemsToDrop.Add(new LootBox.LootItem { itemType = slot.itemType, amount = slot.amount });
+                }
+            }
+        }
+        else
+        {
+            if (dropTable.Count > 0)
+            {
+                foreach (var drop in dropTable)
+                {
+                    if (Random.Range(0f, 100f) <= drop.dropChance)
+                    {
+                        int amount = Random.Range(drop.minAmount, drop.maxAmount + 1);
+                        if (amount > 0)
+                        {
+                            itemsToDrop.Add(new LootBox.LootItem { itemType = drop.itemType, amount = amount });
+                        }
+                    }
                 }
             }
         }

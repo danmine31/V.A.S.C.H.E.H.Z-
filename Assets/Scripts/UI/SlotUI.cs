@@ -25,9 +25,9 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
 
     void Start()
     {
-        inventoryUI = FindObjectOfType<InventoryUI>();
-        lootUI = FindObjectOfType<LootUI>();
-        selectionCtrl = FindObjectOfType<SelectionController>();
+        inventoryUI = FindAnyObjectByType<InventoryUI>();
+        lootUI = FindAnyObjectByType<LootUI>();
+        selectionCtrl = FindAnyObjectByType<SelectionController>();
 
         if (ghostIcon == null)
         {

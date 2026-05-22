@@ -28,6 +28,11 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         UpdateHUD();
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            OnHealButtonClicked();
+        }
     }
 
     void UpdateHUD()
@@ -77,6 +82,8 @@ public class UIManager : MonoBehaviour
 
                 foreach (var unit in SelectionController.Instance.GetSelectedUnits())
                 {
+                    if (unit == null) continue;
+
                     UnitInventory inv = unit.GetComponent<UnitInventory>();
                     if (inv != null)
                     {
@@ -87,8 +94,8 @@ public class UIManager : MonoBehaviour
                 
                 if (isOwnUnit)
                 {
-                    if (ammoText != null) ammoText.text = $"Патроны: {totalAmmo}";
-                    if (medkitText != null) medkitText.text = $"Аптечки: {totalMedkits}";
+                    if (ammoText != null) ammoText.text = $"<color=yellow>Патроны: {totalAmmo}</color>";
+                    if (medkitText != null) medkitText.text = $"<color=#00BFFF>Аптечки: {totalMedkits}</color>";
                 }
                 else
                 {
@@ -117,6 +124,25 @@ public class UIManager : MonoBehaviour
 
             if (inventoryButton != null) inventoryButton.interactable = false;
             if (healButton != null) healButton.interactable = false;
+        }
+    }
+
+    public void OnInventoryButtonClicked()
+    {
+        InventoryUI invUI = FindAnyObjectByType<InventoryUI>();
+        if (invUI != null) invUI.ToggleInventory();
+    }
+
+    public void OnHealButtonClicked()
+    {
+        if (SelectionController.Instance == null) return;
+        foreach (var unit in SelectionController.Instance.GetSelectedUnits())
+        {
+            if (unit != null)
+            {
+                Health h = unit.GetComponent<Health>();
+                if (h != null && h.currentHealth < h.maxHealth) h.TryStartHealing();
+            }
         }
     }
 }

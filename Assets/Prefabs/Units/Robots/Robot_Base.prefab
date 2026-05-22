@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: unitColor.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -3168279087183436918, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
+      propertyPath: unitFraction
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4942405185864518812, guid: f8c5c3170d33dfa40adc0cf397427d9a, type: 3}
       propertyPath: maxHealth
       value: 1000
@@ -249,5 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e96fa69e68b1045856cac7a0938d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitController
+  faction: 0
   gatherRange: 2.5
   gatherCooldown: 1.5

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using UnityEngine.AI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -8,6 +10,10 @@ public class LevelManager : MonoBehaviour
     [Header("UI Экраны")]
     public GameObject winPanel;
     public GameObject losePanel;
+
+    [Header("Условия победы")]
+    [Tooltip("Если включено, победа наступит при уничтожении всех вражеских башен")]
+    public bool winOnTowersDestroyed = false;
 
     private int alivePlayerUnits = 0;
     private bool isGameOver = false;
@@ -25,51 +31,46 @@ public class LevelManager : MonoBehaviour
         if (losePanel) losePanel.SetActive(false);
     }
 
-    public void RegisterPlayerUnit()
+    void Update()
     {
-        alivePlayerUnits++;
+        if (isGameOver) return;
+
+        if (winOnTowersDestroyed)
+        {
+            var enemyTowers = Object.FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude)
+                                .Where(s => s.teamID == 2 && s.GetComponent<NavMeshAgent>() == null);
+
+            if (!enemyTowers.Any())
+            {
+                GameOverWin();
+            }
+        }
+    }
+
+    public void RegisterPlayerUnit() { alivePlayerUnits++; }
+
+    public void UnregisterPlayerUnit()
+    {
+        alivePlayerUnits--;
+        if (alivePlayerUnits <= 0 && !isGameOver) GameOverLose();
     }
 
     public void GameOverWin()
     {
         if (isGameOver) return;
         isGameOver = true;
-        
         Time.timeScale = 0f;
         if (winPanel) winPanel.SetActive(true);
         Debug.Log("Уровень пройден!");
-    }
-
-    public void UnregisterPlayerUnit()
-    {
-        alivePlayerUnits--;
-        Debug.Log("Осталось живых наших юнитов: " + alivePlayerUnits);
-        
-        if (alivePlayerUnits <= 0 && !isGameOver)
-        {
-            GameOverLose();
-        }
     }
 
     public void GameOverLose()
     {
         if (isGameOver) return;
         isGameOver = true;
-        
-        Debug.Log("ВЫЗВАН ЭКРАН ПОРАЖЕНИЯ!");
         Time.timeScale = 0f;
-        
-        if (losePanel != null) 
-        {
-            losePanel.SetActive(true);
-            Debug.Log("Панель поражения успешно включена в коде!");
-        }
-        else 
-        {
-            Debug.LogError("В LevelManager пустая ячейка LosePanel! Ты забыл перетащить её в Инспекторе!");
-        }
+        if (losePanel != null) losePanel.SetActive(true);
     }
-
 
     public void RestartLevel()
     {
@@ -80,7 +81,6 @@ public class LevelManager : MonoBehaviour
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
-
         SceneManager.LoadScene("MainMenu"); 
     }
 }

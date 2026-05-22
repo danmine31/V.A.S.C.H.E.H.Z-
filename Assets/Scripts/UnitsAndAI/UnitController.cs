@@ -110,6 +110,7 @@ public class UnitController : MonoBehaviour
         UnitStats stats = GetComponent<UnitStats>();
         if (inventory != null && inventory.IsFull)
         {
+            Debug.Log($"<color=yellow>[ДОБЫЧА] Инвентарь юнита {gameObject.name} полон! Добыча остановлена.</color>");
             targetResource = null;
             if (autoPilot != null) autoPilot.isManualControl = false;
             return;
@@ -124,8 +125,8 @@ public class UnitController : MonoBehaviour
 
             if (gatherTimer >= gatherCooldown)
             {
-                int amount = targetResource.Gather(5);
-                if (inventory != null)
+                int amount = targetResource.Gather(2);
+                if (inventory != null && amount > 0)
                 {
                     inventory.AddResource(targetResource.type, amount);
                     if (stats.teamID == 1 && targetResource.gameObject.name.ToLower().Contains("artemit"))

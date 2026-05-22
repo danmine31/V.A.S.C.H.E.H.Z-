@@ -105,12 +105,19 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        Vector3 clampedPos = transform.position;
-        
-        clampedPos.x = Mathf.Clamp(clampedPos.x, minX, maxX);
-        clampedPos.z = Mathf.Clamp(clampedPos.z, minZ, maxZ);
-        clampedPos.y = Mathf.Clamp(clampedPos.y, minZoomY, maxZoomY);
-        
-        transform.position = clampedPos;
+        if (groundRenderer != null)
+        {
+            Vector3 clampedPos = transform.position;
+            clampedPos.x = Mathf.Clamp(clampedPos.x, minX, maxX);
+            clampedPos.z = Mathf.Clamp(clampedPos.z, minZ, maxZ);
+            clampedPos.y = Mathf.Clamp(clampedPos.y, minZoomY, maxZoomY);
+            transform.position = clampedPos;
+        }
+        else
+        {
+            Vector3 clampedPos = transform.position;
+            clampedPos.y = Mathf.Clamp(clampedPos.y, minZoomY, maxZoomY);
+            transform.position = clampedPos;
+        }
     }
 }

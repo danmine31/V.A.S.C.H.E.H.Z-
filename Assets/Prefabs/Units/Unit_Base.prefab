@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5602400923934735514}
   - component: {fileID: 6273980438665782693}
   - component: {fileID: 7769207093333053475}
+  - component: {fileID: -7366769180333107167}
   m_Layer: 6
   m_Name: Unit_Base
   m_TagString: Untagged
@@ -103,10 +104,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70ef3438d9246a245890c087a336e9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
+  deathSound: {fileID: 8300000, guid: 9643da8d63cc9d847981b75411c426dc, type: 3}
   maxHealth: 100
   currentHealth: 0
+  lootBoxPrefab: {fileID: 0}
+  dropTable:
+  - itemType: 0
+    minAmount: 0
+    maxAmount: 0
+    dropChance: 0
+  - itemType: 0
+    minAmount: 0
+    maxAmount: 0
+    dropChance: 0
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
   healthBar: {fileID: 0}
+  floatingTextPrefab: {fileID: 0}
 --- !u!114 &-3168279087183436918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,6 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d432cca5b900c547b18233e13556558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitAI
+  shootSound: {fileID: 8300000, guid: cb57a126479d44c4f9b6f043da6abe6b, type: 3}
+  turretModel: {fileID: 0}
   currentBehavior: 2
   canAttack: 1
   attackRange: 10
@@ -162,6 +177,10 @@ MonoBehaviour:
   bulletPrefab: {fileID: 0}
   firePoint: {fileID: 0}
   isManualControl: 0
+  teamID: 0
+  faction: 0
+  baseDamage: 10
+  currentDamage: 0
 --- !u!114 &6273980438665782693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,3 +208,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a8df11a887e4346a6cd537aaf08d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RadiusVisualizer
+--- !u!82 &-7366769180333107167
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8062330763763847126}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 44
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

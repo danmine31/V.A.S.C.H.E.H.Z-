@@ -1,5 +1,6 @@
 public enum ItemType
 {
+    None,
     Egorit,
     Artemit,
     Danilit,

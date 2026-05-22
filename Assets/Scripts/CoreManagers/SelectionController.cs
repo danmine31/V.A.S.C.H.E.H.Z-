@@ -52,6 +52,8 @@ public class SelectionController : MonoBehaviour
 
     void Update()
     {
+        selectedUnits.RemoveAll(unit => unit == null);
+        
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) 

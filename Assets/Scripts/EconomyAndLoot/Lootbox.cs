@@ -78,7 +78,7 @@ public class LootBox : MonoBehaviour
 
     private void OpenLootUI(List<UnitController> squad)
     {
-        LootUI ui = FindObjectOfType<LootUI>();
+        LootUI ui = FindAnyObjectByType<LootUI>();
         if (ui != null)
         {
             ui.OpenLoot(this);
@@ -113,7 +113,7 @@ public class LootBox : MonoBehaviour
         {
             if (boxType == LootBoxType.Dropped)
             {
-                LootUI ui = FindObjectOfType<LootUI>();
+                LootUI ui = FindAnyObjectByType<LootUI>();
                 if (ui != null && ui.CurrentLootBox == this && ui.lootPanel.activeInHierarchy)
                 {
                     return; 

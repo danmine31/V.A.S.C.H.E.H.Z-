@@ -8,13 +8,16 @@ public class Projectile : MonoBehaviour
     
     private UnitStats attackerStats;
     private float armorPen;
+    private bool isCritHit; 
 
-    public void Setup(Health enemyTarget, float bulletDamage, UnitStats attacker, float penetration)
+    public void Setup(Health enemyTarget, float bulletDamage, UnitStats attacker, float penetration, bool isCrit = false)
     {
         target = enemyTarget;
         damage = bulletDamage;
         attackerStats = attacker;
         armorPen = penetration;
+        isCritHit = isCrit;
+
         Destroy(gameObject, 5f);
     }
 
@@ -27,7 +30,7 @@ public class Projectile : MonoBehaviour
 
         if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
         {
-            target.TakeDamage(damage, attackerStats, armorPen);
+            target.TakeDamage(damage, attackerStats, armorPen, isCritHit);
             Destroy(gameObject);
         }
     }

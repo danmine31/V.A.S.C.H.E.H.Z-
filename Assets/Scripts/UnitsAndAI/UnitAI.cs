@@ -5,6 +5,13 @@ public enum AIBehavior { Passive, Patrol, Defend, Aggressive }
 
 public class UnitAI : MonoBehaviour
 {
+    [Header("Звуки")]
+    public AudioClip shootSound;
+    private AudioSource audioSource;
+
+    [Header("Для Зданий (Вращение пушки)")]
+    public Transform turretModel;
+
     [Header("Поведение")]
     public AIBehavior currentBehavior = AIBehavior.Defend;
     public bool canAttack = true;
@@ -48,10 +55,11 @@ public class UnitAI : MonoBehaviour
 
     void Start()
     {
-        currentDamage = baseDamage;
+        audioSource = GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
         myStats = GetComponent<UnitStats>();
+        currentDamage = baseDamage;
 
         if (myStats != null && agent != null)
         {
@@ -74,7 +82,7 @@ public class UnitAI : MonoBehaviour
         switch (currentBehavior)
         {
             case AIBehavior.Passive:
-                if (agent.isOnNavMesh) agent.isStopped = true;
+                if (agent != null && agent.isOnNavMesh) agent.isStopped = true;
                 break;
             case AIBehavior.Patrol:
                 PatrolLogic();
@@ -104,7 +112,7 @@ public class UnitAI : MonoBehaviour
             else
             {
                 targetEnemy = null; 
-                if (agent.isOnNavMesh)
+                if (agent != null && agent.isOnNavMesh)
                 {
                     agent.isStopped = false;
                     agent.SetDestination(startPosition);
@@ -113,7 +121,7 @@ public class UnitAI : MonoBehaviour
         }
         else if (Vector3.Distance(transform.position, startPosition) > 1f)
         {
-            if (agent.isOnNavMesh)
+            if (agent != null && agent.isOnNavMesh)
             {
                 agent.isStopped = false;
                 agent.SetDestination(startPosition);
@@ -156,7 +164,7 @@ public class UnitAI : MonoBehaviour
     {
         if (distance <= attackRange)
         {
-            if (agent.isOnNavMesh && !agent.isStopped)
+            if (agent != null && agent.isOnNavMesh && !agent.isStopped)
             {
                 agent.isStopped = true;
                 if (agent.hasPath) agent.ResetPath();
@@ -167,15 +175,19 @@ public class UnitAI : MonoBehaviour
             lookDir.y = 0;
             if (lookDir != Vector3.zero)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+                Transform thingToRotate = turretModel != null ? turretModel : transform;
+                thingToRotate.rotation = Quaternion.Slerp(thingToRotate.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
             }
             
             PerformAttack(targetEnemy); 
         }
-        else if (agent.isOnNavMesh)
+        else 
         {
-            agent.isStopped = false; 
-            agent.SetDestination(targetEnemy.transform.position);
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.isStopped = false; 
+                agent.SetDestination(targetEnemy.transform.position);
+            }
         }
     }
 
@@ -214,8 +226,14 @@ public class UnitAI : MonoBehaviour
 
             if (projectile != null)
             {
-                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration);
+                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration, isCrit);
             }
+
+            if (shootSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(shootSound);
+            }
+            
             nextAttackTime = Time.time + myStats.attackSpeed;
         }
     }

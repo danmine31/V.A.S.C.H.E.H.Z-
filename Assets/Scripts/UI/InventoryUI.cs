@@ -87,7 +87,7 @@ public class InventoryUI : MonoBehaviour
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         lastSelectedUnit = null;
 
-        LootUI lootUI = FindObjectOfType<LootUI>();
+        LootUI lootUI = FindAnyObjectByType<LootUI>();
         if (lootUI != null)
         {
             lootUI.CloseLoot();

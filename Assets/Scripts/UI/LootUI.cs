@@ -18,7 +18,7 @@ public class LootUI : MonoBehaviour
 
     void Start()
     {
-        inventoryUI = FindObjectOfType<InventoryUI>();
+        inventoryUI = FindAnyObjectByType<InventoryUI>();
         
         if (lootPanel != null) lootPanel.SetActive(false);
     }

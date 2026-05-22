@@ -58,19 +58,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: slots.Array.data[0].itemType
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: slots.Array.data[1].itemType
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: slots.Array.data[2].itemType
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 241731151875222701, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: slots.Array.data[3].itemType
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1215296322497119636, guid: c050b47c22a04114fbe5625b64b90d6d, type: 3}
       propertyPath: teamID
