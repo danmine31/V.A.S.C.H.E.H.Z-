@@ -205,7 +205,7 @@ public class Health : MonoBehaviour
 
         if (stats != null && stats.teamID == 1 && LevelManager.Instance != null)
         {
-            LevelManager.Instance.UnregisterPlayerUnit();
+            LevelManager.Instance.CheckGameOver();
             Debug.Log($"[{gameObject.name}] Умер. Успешно вычеркнут!");
         }
         

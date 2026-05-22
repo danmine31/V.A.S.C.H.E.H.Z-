@@ -49,10 +49,26 @@ public class LevelManager : MonoBehaviour
 
     public void RegisterPlayerUnit() { alivePlayerUnits++; }
 
-    public void UnregisterPlayerUnit()
+    public void CheckGameOver()
     {
-        alivePlayerUnits--;
-        if (alivePlayerUnits <= 0 && !isGameOver) GameOverLose();
+        UnitStats[] allUnits = FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        
+        int aliveCount = 0;
+
+        foreach (UnitStats unit in allUnits)
+        {
+            if (unit.teamID == 1)
+            {
+                aliveCount++;
+            }
+        }
+
+        Debug.Log("После переклички, живых наших осталось: " + aliveCount);
+
+        if (aliveCount <= 0 && !isGameOver)
+        {
+            GameOverLose();
+        }
     }
 
     public void GameOverWin()

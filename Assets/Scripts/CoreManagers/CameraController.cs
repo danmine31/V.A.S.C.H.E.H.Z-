@@ -25,6 +25,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Основа Карты")]
     public Renderer groundRenderer;
+    public Terrain groundTerrain;
     public float boundsPadding = 0f;
 
     [Header("Ограничения зума")]
@@ -45,6 +46,37 @@ public class CameraController : MonoBehaviour
         currentYaw = transform.eulerAngles.y;
 
         UpdateMapBounds();
+        CalculateCameraLimits();
+    }
+
+    void CalculateCameraLimits()
+    {
+        if (groundTerrain != null)
+        {
+            Vector3 terrainPos = groundTerrain.transform.position;
+            Vector3 terrainSize = groundTerrain.terrainData.size;
+
+            minX = terrainPos.x;
+            maxX = terrainPos.x + terrainSize.x;
+            minZ = terrainPos.z;
+            maxZ = terrainPos.z + terrainSize.z;
+            
+            Debug.Log($"Камера настроена под Terrain. Границы: X({minX} до {maxX}), Z({minZ} до {maxZ})");
+        }
+        else if (groundRenderer != null)
+        {
+            minX = groundRenderer.bounds.min.x;
+            maxX = groundRenderer.bounds.max.x;
+            minZ = groundRenderer.bounds.min.z;
+            maxZ = groundRenderer.bounds.max.z;
+            
+            Debug.Log($"Камера настроена под Plane/Renderer. Границы: X({minX} до {maxX}), Z({minZ} до {maxZ})");
+        }
+        else
+        {
+            Debug.LogWarning("В CameraController не назначен пол! Камера может улететь за карту.");
+            minX = -1000f; maxX = 1000f; minZ = -1000f; maxZ = 1000f;
+        }
     }
 
     public void UpdateMapBounds()
