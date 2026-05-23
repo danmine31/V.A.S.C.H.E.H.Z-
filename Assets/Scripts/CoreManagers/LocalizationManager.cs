@@ -38,6 +38,11 @@ public class LocalizationManager : MonoBehaviour
                 case "lose_text": return "Поражение!";
                 case "btn_restart": return "Пройти уровень снова";
                 case "btn_menu": return "В главное меню";
+                case "level_first": return "Уровень 1";
+                case "level_second": return "Уровень 2";
+                case "btn_continue": return "Продолжить";
+                case "bonus_level": return "Бонусный уровень";
+                case "volume": return "Громкость";
                 default: return key;
             }
         }
@@ -55,6 +60,11 @@ public class LocalizationManager : MonoBehaviour
                 case "lose_text": return "Defeat!";
                 case "btn_restart": return "Restart";
                 case "btn_menu": return "Main Menu";
+                case "level_first": return "Level 1";
+                case "level_second": return "Level 2";
+                case "btn_continue": return "Continue";
+                case "bonus_level": return "Bonus level";
+                case "volume": return "Volume";
                 default: return key;
             }
         }
