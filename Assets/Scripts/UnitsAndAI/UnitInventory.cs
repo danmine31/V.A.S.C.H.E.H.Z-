@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class InventorySlot
@@ -71,6 +72,13 @@ public class UnitInventory : MonoBehaviour
             slots.Add(new InventorySlot { itemType = type, amount = amount });
             OnInventoryChanged?.Invoke(); 
         }
+        if (type == ItemType.Artemit) {
+        if (SceneManager.GetActiveScene().name == "Level_Weather") {
+             if (LevelManager.Instance != null) {
+                 LevelManager.Instance.GameOverWin();
+             }
+        }
+    }
     }
 
     public bool RemoveItem(ItemType type, int amountToRemove)

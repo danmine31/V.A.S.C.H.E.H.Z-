@@ -199,15 +199,35 @@ MonoBehaviour:
   groundPlane: {fileID: 1228211430}
   mapSize: {x: 250, y: 250}
   factions:
-  - factionName: 
+  - factionName: Robots
     teamID: 1
     ownerID: 1
-    availableUnits: []
+    availableUnits:
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
+    - {fileID: 6119777610848620133, guid: 55730dab538e7164fa4da78bf142932d, type: 3}
     unitsToSpawn: 0
-  - factionName: 
+  - factionName: Mages
     teamID: 2
     ownerID: 2
-    availableUnits: []
+    availableUnits:
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
+    - {fileID: 6942734561409155496, guid: 40ca4d0578816af4395e25592ddbd4a7, type: 3}
     unitsToSpawn: 0
   structurePrefabs:
   - {fileID: 5896085755844650474, guid: 1ed641473b2d91d44acaf86d4b1291e7, type: 3}
