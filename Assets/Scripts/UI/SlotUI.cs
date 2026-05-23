@@ -87,6 +87,20 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         
         if (hoveredUI == null) 
         {
+            if (panelType == SlotPanelType.Inventory && selectionCtrl != null)
+            {
+                UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
+                if (activeUnit != null)
+                {
+                    UnitInventory unitInv = activeUnit.GetComponent<UnitInventory>();
+                    if (unitInv != null && slotIndex < unitInv.slots.Count)
+                    {
+                        Debug.Log($"<color=red>Предмет {unitInv.slots[slotIndex].itemType} выброшен и уничтожен!</color>");
+                        unitInv.slots.RemoveAt(slotIndex);
+                        inventoryUI.UpdateUI();
+                    }
+                }
+            }
             draggedSlot = null;
             return;
         }

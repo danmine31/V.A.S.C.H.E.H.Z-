@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4334973554763326229}
   - component: {fileID: 4101925849014237168}
   - component: {fileID: 6842141144675815966}
+  - component: {fileID: -843199359343277056}
   - component: {fileID: 3551829994591989524}
   m_Layer: 6
   m_Name: Tower
@@ -227,6 +228,18 @@ MonoBehaviour:
   regenPercentPerTick: 1
   level: 1
   currentXP: 0
+--- !u!114 &-843199359343277056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2577792482459785572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a8df11a887e4346a6cd537aaf08d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadiusVisualizer
 --- !u!82 &3551829994591989524
 AudioSource:
   m_ObjectHideFlags: 0

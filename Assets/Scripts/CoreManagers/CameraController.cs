@@ -45,6 +45,12 @@ public class CameraController : MonoBehaviour
         currentPitch = transform.eulerAngles.x;
         currentYaw = transform.eulerAngles.y;
 
+        if (groundRenderer == null)
+        {
+            GameObject groundObj = GameObject.FindWithTag("Ground");
+            if (groundObj != null) groundRenderer = groundObj.GetComponent<Renderer>();
+        }
+
         UpdateMapBounds();
         CalculateCameraLimits();
     }

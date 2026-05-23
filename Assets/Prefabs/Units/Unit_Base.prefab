@@ -107,19 +107,19 @@ MonoBehaviour:
   deathSound: {fileID: 8300000, guid: 9643da8d63cc9d847981b75411c426dc, type: 3}
   maxHealth: 100
   currentHealth: 0
-  lootBoxPrefab: {fileID: 0}
+  lootBoxPrefab: {fileID: 8322788626981936232, guid: 79c48c525b6296244a4443c9daaeeb40, type: 3}
   dropTable:
-  - itemType: 0
+  - itemType: 4
+    minAmount: 5
+    maxAmount: 10
+    dropChance: 100
+  - itemType: 5
     minAmount: 0
-    maxAmount: 0
-    dropChance: 0
-  - itemType: 0
-    minAmount: 0
-    maxAmount: 0
-    dropChance: 0
+    maxAmount: 2
+    dropChance: 100
   healthBarPrefab: {fileID: 330515819582928209, guid: 193fbbc0b73588c4d898bf990ca916e3, type: 3}
   healthBar: {fileID: 0}
-  floatingTextPrefab: {fileID: 0}
+  floatingTextPrefab: {fileID: 2997873417080715314, guid: 6c6edf367a84cc241bbb55a8b9e6325c, type: 3}
 --- !u!114 &-3168279087183436918
 MonoBehaviour:
   m_ObjectHideFlags: 0

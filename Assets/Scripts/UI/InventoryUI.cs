@@ -31,6 +31,10 @@ public class InventoryUI : MonoBehaviour
         IsInventoryOpen = false;
     }
 
+    void OnEnable() { UnitInventory.OnInventoryChanged += UpdateUI; }
+
+    void OnDisable() { UnitInventory.OnInventoryChanged -= UpdateUI; }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.I))
@@ -95,55 +99,54 @@ public class InventoryUI : MonoBehaviour
     }
 
     public void UpdateUI()
+{
+    if (SelectionController.Instance == null) return;
+    UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
+    if (activeUnit == null) return;
+
+    UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
+    if (inv == null) return;
+
+    SlotUI[] existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
+    
+    if (existingSlots.Length < inv.maxSlots)
     {
-        if (SelectionController.Instance == null) return;
-        UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
-        if (activeUnit == null) return;
-
-        UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
-        if (inv == null) return;
-
-        foreach (Transform child in slotContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
+        foreach (Transform child in slotContainer) Destroy(child.gameObject);
         for (int i = 0; i < inv.maxSlots; i++)
         {
             GameObject newSlot = Instantiate(slotPrefab, slotContainer);
-
             SlotUI slotScript = newSlot.GetComponent<SlotUI>();
-            if (slotScript != null)
-            {
-                slotScript.panelType = SlotPanelType.Inventory;
-                slotScript.slotIndex = i;
-            }
-            
-            Image iconImage = newSlot.transform.Find("Icon").GetComponent<Image>();
-            TextMeshProUGUI amountText = newSlot.transform.Find("AmountText").GetComponent<TextMeshProUGUI>();
-
-            if (i < inv.slots.Count)
-            {
-                var slotData = inv.slots[i];
-                
-                Sprite foundIcon = GetIcon(slotData.itemType);
-                if (foundIcon != null)
-                {
-                    iconImage.sprite = foundIcon;
-                    iconImage.color = Color.white;
-                }
-
-                amountText.text = slotData.amount.ToString();
-            }
-            else
-            {
-                iconImage.color = new Color(0, 0, 0, 0);
-                amountText.text = "";
-            }
+            slotScript.panelType = SlotPanelType.Inventory;
+            slotScript.slotIndex = i;
         }
-
-        lastSelectedUnit = activeUnit;
+        existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
     }
+
+    for (int i = 0; i < inv.maxSlots; i++)
+    {
+        SlotUI slotScript = existingSlots[i];
+        UnityEngine.UI.Image iconImage = slotScript.transform.Find("Icon").GetComponent<UnityEngine.UI.Image>();
+        TMPro.TextMeshProUGUI amountText = slotScript.transform.Find("AmountText").GetComponent<TMPro.TextMeshProUGUI>();
+
+        if (i < inv.slots.Count)
+        {
+            var slotData = inv.slots[i];
+            Sprite foundIcon = GetIcon(slotData.itemType);
+            if (foundIcon != null)
+            {
+                iconImage.sprite = foundIcon;
+                iconImage.color = Color.white;
+            }
+            amountText.text = slotData.amount.ToString();
+        }
+        else
+        {
+            iconImage.color = new Color(0, 0, 0, 0);
+            amountText.text = "";
+        }
+    }
+    lastSelectedUnit = activeUnit;
+}
 
     private Sprite GetIcon(ItemType type)
     {

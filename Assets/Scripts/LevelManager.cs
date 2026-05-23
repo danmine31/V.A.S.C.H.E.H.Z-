@@ -12,11 +12,10 @@ public class LevelManager : MonoBehaviour
     public GameObject losePanel;
 
     [Header("Условия победы")]
-    [Tooltip("Если включено, победа наступит при уничтожении всех вражеских башен")]
     public bool winOnTowersDestroyed = false;
 
-    private int alivePlayerUnits = 0;
     private bool isGameOver = false;
+    private bool playerHadUnits = false;
 
     void Awake()
     {
@@ -35,6 +34,19 @@ public class LevelManager : MonoBehaviour
     {
         if (isGameOver) return;
 
+        var playerUnits = Object.FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude)
+                            .Where(s => s.teamID == 1 && s.GetComponent<NavMeshAgent>() != null);
+
+        int aliveCount = playerUnits.Count();
+
+        if (aliveCount > 0) playerHadUnits = true;
+
+        if (playerHadUnits && aliveCount == 0)
+        {
+            GameOverLose();
+            return;
+        }
+
         if (winOnTowersDestroyed)
         {
             var enemyTowers = Object.FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude)
@@ -47,40 +59,8 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void RegisterPlayerUnit() { alivePlayerUnits++; }
-
-    public void CheckGameOver()
-    {
-        UnitStats[] allUnits = FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        
-        int aliveCount = 0;
-
-        foreach (UnitStats unit in allUnits)
-        {
-            if (unit.teamID == 1)
-            {
-                aliveCount++;
-            }
-        }
-
-        Debug.Log("После переклички, живых наших осталось: " + aliveCount);
-
-        if (aliveCount <= 0 && !isGameOver)
-        {
-            GameOverLose();
-        }
-    }
-
-    public void UnregisterPlayerUnit()
-    {
-        alivePlayerUnits--;
-        Debug.Log("Осталось живых наших юнитов: " + alivePlayerUnits);
-        
-        if (alivePlayerUnits <= 0 && !isGameOver)
-        {
-            GameOverLose();
-        }
-    }
+    public void RegisterPlayerUnit() { }
+    public void UnregisterPlayerUnit() { }
 
     public void GameOverWin()
     {
@@ -88,7 +68,7 @@ public class LevelManager : MonoBehaviour
         isGameOver = true;
         Time.timeScale = 0f;
         if (winPanel) winPanel.SetActive(true);
-        Debug.Log("Уровень пройден!");
+        Debug.Log("<color=green>ПОБЕДА!</color>");
     }
 
     public void GameOverLose()
@@ -97,6 +77,7 @@ public class LevelManager : MonoBehaviour
         isGameOver = true;
         Time.timeScale = 0f;
         if (losePanel != null) losePanel.SetActive(true);
+        Debug.Log("<color=red>ПОРАЖЕНИЕ!</color>");
     }
 
     public void RestartLevel()

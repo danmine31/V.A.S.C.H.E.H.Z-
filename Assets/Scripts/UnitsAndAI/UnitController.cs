@@ -117,28 +117,39 @@ public class UnitController : MonoBehaviour
         }
 
         float distance = Vector3.Distance(transform.position, targetResource.transform.position);
+        Health myHealth = GetComponent<Health>();
 
         if (distance <= gatherRange)
         {
-            agent.isStopped = true;
+            if (!agent.isStopped)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+            }
+
             gatherTimer += Time.deltaTime;
 
-            if (gatherTimer >= gatherCooldown)
+            if (myHealth != null && myHealth.healthBar != null)
+            {
+                myHealth.healthBar.UpdateActionBar(gatherTimer / targetResource.gatherTime);
+            }
+
+            if (gatherTimer >= targetResource.gatherTime)
             {
                 int amount = targetResource.Gather(2);
-                if (inventory != null && amount > 0)
+                if (amount > 0)
                 {
                     inventory.AddResource(targetResource.type, amount);
-                    if (stats.teamID == 1 && targetResource.gameObject.name.ToLower().Contains("artemit"))
-                    {
-                        if (LevelManager.Instance != null) LevelManager.Instance.GameOverWin();
-                    }
                 }
-                gatherTimer = 0;
+                gatherTimer = 0f;
+                if (myHealth != null && myHealth.healthBar != null) myHealth.healthBar.UpdateActionBar(0f);
             }
         }
         else
         {
+            gatherTimer = 0f;
+            if (myHealth != null && myHealth.healthBar != null) myHealth.healthBar.UpdateActionBar(0f);
+            
             agent.isStopped = false;
             agent.SetDestination(targetResource.transform.position);
         }

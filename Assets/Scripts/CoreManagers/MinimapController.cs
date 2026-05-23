@@ -11,6 +11,19 @@ public class MinimapController : MonoBehaviour, IPointerClickHandler
     public Vector3 cameraOffset = new Vector3(0f, 0f, -20f); 
     public float edgePadding = 30f;
 
+    void Start()
+    {
+        if (groundRenderer == null)
+        {
+            GameObject groundObj = GameObject.FindWithTag("Ground");
+            if (groundObj != null) groundRenderer = groundObj.GetComponent<Renderer>();
+        }
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main.transform;
+        }
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (groundRenderer == null || mainCamera == null) return;

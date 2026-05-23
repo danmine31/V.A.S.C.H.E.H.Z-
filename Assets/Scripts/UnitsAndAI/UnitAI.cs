@@ -162,7 +162,7 @@ public class UnitAI : MonoBehaviour
 
     void AttackEnemy(float distance)
     {
-        if (distance <= attackRange)
+        if (distance <= attackRange && CanSeeTarget(targetEnemy))
         {
             if (agent != null && agent.isOnNavMesh && !agent.isStopped)
             {
@@ -285,5 +285,24 @@ public class UnitAI : MonoBehaviour
             currentDamage *= 1.5f;
             Debug.Log("Роботы усилены днём!");
         }
+    }
+
+    bool CanSeeTarget(Health target)
+    {
+        if (target == null) return false;
+        
+        Vector3 start = transform.position + Vector3.up * 1f;
+        Vector3 end = target.transform.position + Vector3.up * 1f;
+        Vector3 dir = end - start;
+        
+        if (Physics.Raycast(start, dir.normalized, out RaycastHit hit, dir.magnitude))
+        {
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && 
+                hit.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -10,11 +10,12 @@ public class UIManager : MonoBehaviour
     public GameObject bottomHUD;
 
     [Header("Портрет и Тексты")]
-    public Image portraitImage; 
+    public RawImage portraitImage;
     public TextMeshProUGUI unitNameText;
     public TextMeshProUGUI statsText;
     public TextMeshProUGUI ammoText; 
     public TextMeshProUGUI medkitText;
+    public TextMeshProUGUI influenceText;
 
     [Header("Кнопки приказов")]
     public Button inventoryButton;
@@ -38,6 +39,11 @@ public class UIManager : MonoBehaviour
     void UpdateHUD()
     {
         if (SelectionController.Instance == null) return;
+
+        if (influenceText != null && GameManager.Instance != null)
+        {
+            influenceText.text = $"<color=orange>Влияние: {GameManager.Instance.influencePoints}</color>";
+        }
         
         UnitController selectedUnit = SelectionController.Instance.GetMainSelectedUnit();
         UnitStats inspectedUnit = SelectionController.Instance.GetInspectedUnit();
@@ -62,7 +68,16 @@ public class UIManager : MonoBehaviour
 
             if (health != null)
             {
-                if (unitNameText != null) unitNameText.text = displayStats.unitName;
+                if (unitNameText != null)
+                {
+                    int selectedCount = SelectionController.Instance.GetSelectedUnits().Count;
+                    if (selectedCount > 1)
+                    {
+                        unitNameText.text = $"{displayStats.unitName}\n<color=yellow><size=70%>ВЫДЕЛЕНО: {selectedCount}</size></color>";
+                    }
+                    else unitNameText.text = displayStats.unitName;
+                }
+
                 if (statsText != null) 
                 {
                     statsText.text = 

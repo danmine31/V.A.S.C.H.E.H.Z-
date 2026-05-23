@@ -97,6 +97,13 @@ public class Health : MonoBehaviour
             UnitAI ai = GetComponent<UnitAI>();
             if (ai != null) ai.isManualControl = true; 
 
+            UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+            }
+
             StartCoroutine(HealingProcessCoroutine(inventory, ai));
         }
     }
@@ -112,16 +119,21 @@ public class Health : MonoBehaviour
         while (timer < 5f)
         {
             timer += Time.deltaTime;
+            
+            if (healthBar != null) healthBar.UpdateActionBar(timer / 5f);
 
             if (Vector3.Distance(startPos, transform.position) > 0.5f)
             {
                 Debug.Log($"<color=red>Лечение прервано!</color>");
                 isHealing = false;
                 if (ai != null) ai.isManualControl = false;
-                yield break;
+                if (healthBar != null) healthBar.UpdateActionBar(0f);
+                yield break; 
             }
             yield return null; 
         }
+
+        if (healthBar != null) healthBar.UpdateActionBar(0f);
 
         if (inventory != null && inventory.RemoveItem(ItemType.Medkit, 1))
         {
@@ -201,13 +213,6 @@ public class Health : MonoBehaviour
         if (playerHelpedKill && stats != null && stats.ownerID != 1 && GameManager.Instance != null)
         {
             GameManager.Instance.AddInfluence(4);
-        }
-
-        if (stats != null && stats.teamID == 1 && LevelManager.Instance != null)
-        {
-            LevelManager.Instance.UnregisterPlayerUnit();
-            LevelManager.Instance.CheckGameOver();
-            Debug.Log($"[{gameObject.name}] Умер. Успешно вычеркнут!");
         }
         
         if (healthBar != null) Destroy(healthBar.gameObject);

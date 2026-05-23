@@ -21,7 +21,7 @@ public class SelectionController : MonoBehaviour
 
     void Awake()
     {
-        SelectionController[] allControllers = FindObjectsByType<SelectionController>(FindObjectsSortMode.None);
+        SelectionController[] allControllers = FindObjectsByType<SelectionController>(FindObjectsInactive.Include);
         
         if (allControllers.Length > 1)
         {

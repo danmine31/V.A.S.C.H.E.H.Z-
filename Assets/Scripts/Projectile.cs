@@ -26,7 +26,18 @@ public class Projectile : MonoBehaviour
         if (target == null) { Destroy(gameObject); return; }
 
         Vector3 direction = (target.transform.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        float moveDistance = speed * Time.deltaTime;
+
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, moveDistance))
+        {
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Unit"))
+            {
+                Destroy(gameObject);
+                return;
+            }
+        }
+
+        transform.position += direction * moveDistance;
 
         if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
         {
