@@ -71,6 +71,17 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public void UnregisterPlayerUnit()
+    {
+        alivePlayerUnits--;
+        Debug.Log("Осталось живых наших юнитов: " + alivePlayerUnits);
+        
+        if (alivePlayerUnits <= 0 && !isGameOver)
+        {
+            GameOverLose();
+        }
+    }
+
     public void GameOverWin()
     {
         if (isGameOver) return;
