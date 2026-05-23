@@ -46,4 +46,9 @@ public class MainMenuController : MonoBehaviour
         Debug.Log("Выходим из игры...");
         Application.Quit(); 
     }
+
+    public void LoadCustomLevel()
+    {
+        SceneManager.LoadScene("Level_Custom");
+    }
 }

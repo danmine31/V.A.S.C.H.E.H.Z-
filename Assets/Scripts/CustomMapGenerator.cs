@@ -4,9 +4,9 @@ using System.Collections.Generic;
 [System.Serializable]
 public class FactionSetup
 {
-    public string factionName;
-    public int teamID;
-    public int ownerID;
+    public string factionName = "Новая Фракция";
+    public int teamID = 1;
+    public int ownerID = 1;
     public GameObject[] availableUnits;
     public int unitsToSpawn = 5;
 }
@@ -19,20 +19,28 @@ public class CustomMapGenerator : MonoBehaviour
     public Transform groundPlane;
     public Vector2 mapSize = new Vector2(200f, 200f);
 
-    [Header("Фракции на карте (Добавь Игрока и Бота)")]
+    [Header("Фракции на карте")]
     public List<FactionSetup> factions = new List<FactionSetup>();
 
     [Header("Префабы окружения")]
     public GameObject[] structurePrefabs; 
     public GameObject[] resourcePrefabs;  
 
-    [Header("Ползунки Плотности")]
+    [Header("Плотность застройки")]
     [Range(0, 100)] public int structureCount = 30; 
     [Range(0, 50)] public int resourceCount = 15;   
     
     private List<GameObject> spawnedObjects = new List<GameObject>();
 
-    void Awake() { if (Instance == null) Instance = this; }
+    void Awake() 
+    { 
+        if (Instance == null) Instance = this; 
+    }
+
+    void Start()
+    {
+        GenerateMap();
+    }
 
     public void GenerateMap()
     {
@@ -74,9 +82,11 @@ public class CustomMapGenerator : MonoBehaviour
     void ScatterObjects(GameObject[] prefabs, int count)
     {
         if (prefabs == null || prefabs.Length == 0) return;
+        
         for (int i = 0; i < count; i++)
         {
             Vector3 randomPos = new Vector3(Random.Range(-mapSize.x / 2.2f, mapSize.x / 2.2f), 50f, Random.Range(-mapSize.y / 2.2f, mapSize.y / 2.2f));
+            
             if (Physics.Raycast(randomPos, Vector3.down, out RaycastHit hit, 100f))
             {
                 GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
@@ -94,7 +104,6 @@ public class CustomMapGenerator : MonoBehaviour
         {
             Vector2 randomCircle = Random.insideUnitCircle * 10f; 
             Vector3 spawnPos = basePos + new Vector3(randomCircle.x, 50f, randomCircle.y);
-
             if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 100f))
             {
                 GameObject prefab = faction.availableUnits[Random.Range(0, faction.availableUnits.Length)];
