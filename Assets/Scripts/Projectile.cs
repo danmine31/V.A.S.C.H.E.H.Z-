@@ -32,8 +32,11 @@ public class Projectile : MonoBehaviour
         {
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Unit"))
             {
-                Destroy(gameObject);
-                return;
+                if (hit.collider.GetComponentInParent<LootBox>() == null)
+                {
+                    Destroy(gameObject); 
+                    return;
+                }
             }
         }
 

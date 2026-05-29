@@ -99,54 +99,68 @@ public class InventoryUI : MonoBehaviour
     }
 
     public void UpdateUI()
-{
-    if (SelectionController.Instance == null) return;
-    UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
-    if (activeUnit == null) return;
-
-    UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
-    if (inv == null) return;
-
-    SlotUI[] existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
-    
-    if (existingSlots.Length < inv.maxSlots)
     {
-        foreach (Transform child in slotContainer) Destroy(child.gameObject);
+        if (SelectionController.Instance == null) return;
+        UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
+        if (activeUnit == null) return;
+
+        UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
+        if (inv == null) return;
+
+        for (int i = 0; i < slotContainer.childCount; i++)
+        {
+            GameObject slotObj = slotContainer.GetChild(i).gameObject;
+            if (i >= inv.maxSlots)
+            {
+                slotObj.SetActive(false); 
+            }
+            else
+            {
+                slotObj.SetActive(true);
+            }
+        }
+
+
+        SlotUI[] existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
+        
+        if (existingSlots.Length < inv.maxSlots)
+        {
+            foreach (Transform child in slotContainer) Destroy(child.gameObject);
+            for (int i = 0; i < inv.maxSlots; i++)
+            {
+                GameObject newSlot = Instantiate(slotPrefab, slotContainer);
+                SlotUI slotScript = newSlot.GetComponent<SlotUI>();
+                slotScript.panelType = SlotPanelType.Inventory;
+                slotScript.slotIndex = i;
+            }
+            existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
+        }
+
         for (int i = 0; i < inv.maxSlots; i++)
         {
-            GameObject newSlot = Instantiate(slotPrefab, slotContainer);
-            SlotUI slotScript = newSlot.GetComponent<SlotUI>();
-            slotScript.panelType = SlotPanelType.Inventory;
-            slotScript.slotIndex = i;
-        }
-        existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
-    }
+            SlotUI slotScript = existingSlots[i];
+            UnityEngine.UI.Image iconImage = slotScript.transform.Find("Icon").GetComponent<UnityEngine.UI.Image>();
+            TMPro.TextMeshProUGUI amountText = slotScript.transform.Find("AmountText").GetComponent<TMPro.TextMeshProUGUI>();
 
-    for (int i = 0; i < inv.maxSlots; i++)
-    {
-        SlotUI slotScript = existingSlots[i];
-        UnityEngine.UI.Image iconImage = slotScript.transform.Find("Icon").GetComponent<UnityEngine.UI.Image>();
-        TMPro.TextMeshProUGUI amountText = slotScript.transform.Find("AmountText").GetComponent<TMPro.TextMeshProUGUI>();
-
-        if (i < inv.slots.Count)
-        {
-            var slotData = inv.slots[i];
-            Sprite foundIcon = GetIcon(slotData.itemType);
-            if (foundIcon != null)
+            if (i < inv.slots.Count)
             {
-                iconImage.sprite = foundIcon;
-                iconImage.color = Color.white;
+                var slotData = inv.slots[i];
+                Sprite foundIcon = GetIcon(slotData.itemType);
+                if (foundIcon != null)
+                {
+                    iconImage.sprite = foundIcon;
+                    iconImage.color = Color.white;
+                }
+                amountText.text = slotData.amount.ToString();
             }
-            amountText.text = slotData.amount.ToString();
+            else
+            {
+                iconImage.color = new Color(0, 0, 0, 0);
+                amountText.text = "";
+            }
         }
-        else
-        {
-            iconImage.color = new Color(0, 0, 0, 0);
-            amountText.text = "";
-        }
+        lastSelectedUnit = activeUnit;
     }
-    lastSelectedUnit = activeUnit;
-}
 
     private Sprite GetIcon(ItemType type)
     {

@@ -1436,36 +1436,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].teamID
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
       propertyPath: players.Array.data[2].ownerID
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].ownerID
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
       propertyPath: players.Array.data[2].playerName
       value: Ally
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].playerName
-      value: Ally
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[0].playerColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[1].playerColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[2].playerColor.a
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
       propertyPath: players.Array.data[2].playerColor.b
@@ -1478,18 +1454,6 @@ PrefabInstance:
     - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
       propertyPath: players.Array.data[2].playerColor.r
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].playerColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].playerColor.b
-      value: 0.065164685
-      objectReference: {fileID: 0}
-    - target: {fileID: 6354845543743273787, guid: 150241d9fcdb587489241cc905849014, type: 3}
-      propertyPath: players.Array.data[3].playerColor.g
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6408906205105251206, guid: 150241d9fcdb587489241cc905849014, type: 3}
       propertyPath: m_AnchorMax.y

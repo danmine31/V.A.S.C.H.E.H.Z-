@@ -37,7 +37,7 @@ public class Health : MonoBehaviour
     private bool isHealing = false;
 
     void Start()
-    {
+    {      оо
         stats = GetComponent<UnitStats>();
 
         if (stats != null) maxHealth = stats.maxHealth;
@@ -47,14 +47,24 @@ public class Health : MonoBehaviour
         {
             GameObject hbObj = Instantiate(healthBarPrefab, this.transform);
             healthBar = hbObj.GetComponent<HealthBar>();
+            Debug.Log($"[{gameObject.name}] Слайдер MaxValue: {healthBar.slider.maxValue}, Value: {healthBar.slider.value}");
+
             if (healthBar != null)
             {
                 healthBar.target = this.transform;
                 healthBar.UpdateHealthBar(currentHealth, maxHealth);
                 int lvl = stats != null ? stats.level : 1;
                 healthBar.UpdateLevelText(lvl);
+
+                if (GameManager.Instance != null && stats != null)
+                {
+                    Color realColor = GameManager.Instance.GetPlayerColor(stats.ownerID);
+                    healthBar.SetColor(realColor);
+                }
             }
         }
+        Debug.Log($"[{gameObject.name}] Мой OwnerID: {stats.ownerID}. Цвет из менеджера: {GameManager.Instance.GetPlayerColor(stats.ownerID)}");
+        Debug.Log($"[{gameObject.name}] HP: {currentHealth} / {maxHealth}");
     }
 
     void Update()
