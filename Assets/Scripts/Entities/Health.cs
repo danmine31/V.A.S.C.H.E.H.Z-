@@ -37,7 +37,7 @@ public class Health : MonoBehaviour
     private bool isHealing = false;
 
     void Start()
-    {      оо
+    {
         stats = GetComponent<UnitStats>();
 
         if (stats != null) maxHealth = stats.maxHealth;

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MinimapController : MonoBehaviour, IPointerClickHandler
+public class MinimapCameraController : MonoBehaviour, IPointerClickHandler
 {
     [Header("Объекты")]
     public Transform mainCamera;

@@ -84,7 +84,7 @@ public class MazeGenerator : MonoBehaviour
             float floorPosZ = (height * cellSize) / 2f - (cellSize / 2f);
             floorObj = Instantiate(floorPrefab, new Vector3(floorPosX, 0, floorPosZ), Quaternion.identity);
             
-            float floorMargin = 5f; // Наш отступ
+            float floorMargin = 5f;
             floorObj.transform.localScale = new Vector3(
                 ((width * cellSize) / 10f) + floorMargin, 
                 1, 
