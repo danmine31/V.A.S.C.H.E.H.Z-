@@ -16,14 +16,11 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryPanel;
     public Transform slotContainer;
     public GameObject slotPrefab;
-
-    [Header("База иконок")]
     public List<ItemIcon> itemDatabase;
 
     public bool IsInventoryOpen { get; private set; }
 
-    private SelectionController selectionCtrl;
-    private UnitController lastSelectedUnit;
+    private EntityController lastSelectedUnit;
 
     void Start()
     {
@@ -32,42 +29,26 @@ public class InventoryUI : MonoBehaviour
     }
 
     void OnEnable() { UnitInventory.OnInventoryChanged += UpdateUI; }
-
     void OnDisable() { UnitInventory.OnInventoryChanged -= UpdateUI; }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            ToggleInventory();
-        }
+        if (Input.GetKeyDown(KeyCode.I)) ToggleInventory();
 
         if (IsInventoryOpen)
         {
-            UnitController currentUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedUnit() : null;
-
-            if (currentUnit == null)
-            {
-                CloseInventory();
-                return;
-            }
-
-            if (currentUnit != lastSelectedUnit)
-            {
-                UpdateUI();
-            }
+            EntityController currentUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedController() : null;
+            if (currentUnit == null) { CloseInventory(); return; }
+            if (currentUnit != lastSelectedUnit) UpdateUI();
         }
     }
 
     public void ToggleInventory()
     {
-        if (IsInventoryOpen)
-        {
-            CloseInventory();
-        }
+        if (IsInventoryOpen) CloseInventory();
         else
         {
-            if (SelectionController.Instance != null && SelectionController.Instance.GetMainSelectedUnit() == null)
+            if (SelectionController.Instance != null && SelectionController.Instance.GetMainSelectedController() == null)
             {
                 Debug.LogWarning("Сначала выделите юнита!");
                 return; 
@@ -92,16 +73,13 @@ public class InventoryUI : MonoBehaviour
         lastSelectedUnit = null;
 
         LootUI lootUI = FindAnyObjectByType<LootUI>();
-        if (lootUI != null)
-        {
-            lootUI.CloseLoot();
-        }
+        if (lootUI != null) lootUI.CloseLoot();
     }
 
     public void UpdateUI()
     {
         if (SelectionController.Instance == null) return;
-        UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
+        EntityController activeUnit = SelectionController.Instance.GetMainSelectedController();
         if (activeUnit == null) return;
 
         UnitInventory inv = activeUnit.GetComponent<UnitInventory>();
@@ -110,16 +88,8 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < slotContainer.childCount; i++)
         {
             GameObject slotObj = slotContainer.GetChild(i).gameObject;
-            if (i >= inv.maxSlots)
-            {
-                slotObj.SetActive(false); 
-            }
-            else
-            {
-                slotObj.SetActive(true);
-            }
+            slotObj.SetActive(i < inv.maxSlots);
         }
-
 
         SlotUI[] existingSlots = slotContainer.GetComponentsInChildren<SlotUI>();
         
@@ -139,8 +109,8 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < inv.maxSlots; i++)
         {
             SlotUI slotScript = existingSlots[i];
-            UnityEngine.UI.Image iconImage = slotScript.transform.Find("Icon").GetComponent<UnityEngine.UI.Image>();
-            TMPro.TextMeshProUGUI amountText = slotScript.transform.Find("AmountText").GetComponent<TMPro.TextMeshProUGUI>();
+            Image iconImage = slotScript.transform.Find("Icon").GetComponent<Image>();
+            TextMeshProUGUI amountText = slotScript.transform.Find("AmountText").GetComponent<TextMeshProUGUI>();
 
             if (i < inv.slots.Count)
             {
@@ -164,10 +134,7 @@ public class InventoryUI : MonoBehaviour
 
     private Sprite GetIcon(ItemType type)
     {
-        foreach (var item in itemDatabase)
-        {
-            if (item.itemType == type) return item.icon;
-        }
+        foreach (var item in itemDatabase) if (item.itemType == type) return item.icon;
         return null;
     }
 }

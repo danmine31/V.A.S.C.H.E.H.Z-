@@ -7,22 +7,23 @@ public class SelectionController : MonoBehaviour
     public RectTransform selectionBoxVisual;
     public LayerMask groundLayer;
     public LayerMask unitLayer;
+    public LayerMask buildingLayer;
+    public LayerMask vehicleLayer;
     public LayerMask resourceLayer; 
 
-    private List<UnitController> selectedUnits = new List<UnitController>();
+    private List<EntityController> selectedControllers = new List<EntityController>();
+    private EntityStats inspectedEntity;
+
     private Vector2 startMousePos;
     private bool isBoxSelecting = false;
     private bool startedClickOnUI = false;
     public static bool isRadiusesVisible = false;
-
-    private UnitStats inspectedUnit;
 
     public static SelectionController Instance;
 
     void Awake()
     {
         SelectionController[] allControllers = FindObjectsByType<SelectionController>(FindObjectsInactive.Include);
-        
         if (allControllers.Length > 1)
         {
             foreach (var ctrl in allControllers)
@@ -34,25 +35,21 @@ public class SelectionController : MonoBehaviour
                         Destroy(this);
                         return;
                     }
-                    else
-                    {
-                        Destroy(ctrl);
-                    }
+                    else Destroy(ctrl);
                 }
             }
         }
-        
         Instance = this;
     }
 
     public bool HasSelectedUnits()
     {
-        return selectedUnits.Count > 0;
+        return selectedControllers.Count > 0;
     }
 
     void Update()
     {
-        selectedUnits.RemoveAll(unit => unit == null);
+        selectedControllers.RemoveAll(c => c == null);
         
         if (Input.GetMouseButtonDown(0))
         {
@@ -79,10 +76,7 @@ public class SelectionController : MonoBehaviour
                 isBoxSelecting = true;
                 if (selectionBoxVisual != null) selectionBoxVisual.gameObject.SetActive(true);
             }
-            if (isBoxSelecting)
-            {
-                UpdateSelectionBox();
-            }
+            if (isBoxSelecting) UpdateSelectionBox();
         }
 
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -90,7 +84,6 @@ public class SelectionController : MonoBehaviour
             isRadiusesVisible = true;
             SetAllRadiusesVisible(true);
         }
-
         if (Input.GetKeyUp(KeyCode.Tab))
         {
             isRadiusesVisible = false;
@@ -105,17 +98,16 @@ public class SelectionController : MonoBehaviour
                 return;
             }
 
-            if (isBoxSelecting) SelectUnitsInBox();
-            else SelectSingleUnit();
+            if (isBoxSelecting) SelectEntitiesInBox();
+            else SelectSingleEntity();
             
             if (selectionBoxVisual != null) selectionBoxVisual.gameObject.SetActive(false);
             isBoxSelecting = false;
         }
 
-        if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
+        if (Input.GetMouseButtonDown(1) && selectedControllers.Count > 0)
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            
             MoveOrAttack();
         }
     }
@@ -131,65 +123,59 @@ public class SelectionController : MonoBehaviour
         selectionBoxVisual.anchoredPosition = startMousePos + new Vector2(width / 2, height / 2);
     }
 
-    void ClearInspected()
+    void SelectSingleEntity()
     {
-        if (inspectedUnit != null)
-        {
-            inspectedUnit.SetSelected(false);
-            inspectedUnit = null;
-        }
-    }
+        selectedControllers.RemoveAll(c => c == null);
+        foreach (var ctrl in selectedControllers) ctrl.GetComponent<EntityStats>().SetSelected(false);
+        selectedControllers.Clear();
 
-    void SelectSingleUnit()
-    {
-        selectedUnits.RemoveAll(u => u == null);
-        foreach (var unit in selectedUnits) unit.GetComponent<UnitStats>().SetSelected(false);
-        selectedUnits.Clear();
-
-        if (inspectedUnit != null)
+        if (inspectedEntity != null)
         {
-            inspectedUnit.SetSelected(false);
-            inspectedUnit = null;
+            inspectedEntity.SetSelected(false);
+            inspectedEntity = null;
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        int entityMask = unitLayer | buildingLayer | vehicleLayer;
 
-        if (Physics.Raycast(ray, out hit, 1000f, unitLayer))
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, entityMask))
         {
-            UnitStats stats = hit.collider.GetComponentInParent<UnitStats>();
-
+            EntityStats stats = hit.collider.GetComponentInParent<EntityStats>();
             if (stats != null)
             {
                 if (stats.ownerID == 1)
                 {
-                    UnitController controller = stats.GetComponent<UnitController>();
+                    EntityController controller = stats.GetComponent<EntityController>();
                     if (controller != null)
                     {
-                        selectedUnits.Add(controller);
+                        selectedControllers.Add(controller);
+                        stats.SetSelected(true);
+                    }
+                    else
+                    {
+                        inspectedEntity = stats;
                         stats.SetSelected(true);
                     }
                 }
                 else
                 {
-                    inspectedUnit = stats;
+                    inspectedEntity = stats;
                     stats.SetSelected(true);
-                    Debug.Log($"<color=yellow>Осмотр: {stats.unitName}</color>");
                 }
             }
         }
     }
 
-    void SelectUnitsInBox()
+    void SelectEntitiesInBox()
     {
-        selectedUnits.RemoveAll(u => u == null);
-        foreach (var unit in selectedUnits) unit.GetComponent<UnitStats>().SetSelected(false);
-        selectedUnits.Clear();
+        selectedControllers.RemoveAll(c => c == null);
+        foreach (var ctrl in selectedControllers) ctrl.GetComponent<EntityStats>().SetSelected(false);
+        selectedControllers.Clear();
         
-        if (inspectedUnit != null)
+        if (inspectedEntity != null)
         {
-            inspectedUnit.SetSelected(false);
-            inspectedUnit = null;
+            inspectedEntity.SetSelected(false);
+            inspectedEntity = null;
         }
 
         Rect selectionRect = new Rect(
@@ -199,48 +185,47 @@ public class SelectionController : MonoBehaviour
             Mathf.Abs(startMousePos.y - Input.mousePosition.y)
         );
 
-        var allStats = Object.FindObjectsByType<UnitStats>(FindObjectsInactive.Exclude);
+        var allStats = Object.FindObjectsByType<EntityStats>(FindObjectsInactive.Exclude);
         
-        foreach (UnitStats stats in allStats)
+        foreach (EntityStats stats in allStats)
         {
             if (stats.ownerID == 1)
             {
-                UnitController controller = stats.GetComponent<UnitController>();
+                EntityController controller = stats.GetComponent<EntityController>();
                 if (controller != null)
                 {
                     Vector2 screenPos = Camera.main.WorldToScreenPoint(stats.transform.position);
                     if (selectionRect.Contains(screenPos))
                     {
-                        selectedUnits.Add(controller);
+                        selectedControllers.Add(controller);
                         stats.SetSelected(true);
                     }
                 }
             }
         }
 
-        if (selectedUnits.Count == 0)
+        if (selectedControllers.Count == 0)
         {
-            foreach (UnitStats stats in allStats)
+            foreach (EntityStats stats in allStats)
             {
                 if (stats.ownerID != 1)
                 {
                     Vector2 screenPos = Camera.main.WorldToScreenPoint(stats.transform.position);
                     if (selectionRect.Contains(screenPos))
                     {
-                        inspectedUnit = stats;
+                        inspectedEntity = stats;
                         stats.SetSelected(true);
-                        break;
+                        break; 
                     }
                 }
             }
         }
-        Debug.Log("Выбрано юнитов: " + selectedUnits.Count);
     }
 
     void MoveOrAttack()
     {
-        selectedUnits.RemoveAll(unit => unit == null);
-        if (selectedUnits.Count == 0) return;
+        selectedControllers.RemoveAll(c => c == null);
+        if (selectedControllers.Count == 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -250,23 +235,23 @@ public class SelectionController : MonoBehaviour
             LootBox box = hit.collider.GetComponentInParent<LootBox>();
             if (box != null)
             {
-                foreach (var unit in selectedUnits) unit.MoveTo(hit.point);
-                box.InteractWithBox(selectedUnits); 
+                foreach (var ctrl in selectedControllers) ctrl.MoveTo(hit.point);
+                box.InteractWithBox(selectedControllers); 
                 return;
             }
         }
 
-        if (Physics.Raycast(ray, out hit, 1000f, unitLayer))
+        int entityMask = unitLayer | buildingLayer | vehicleLayer;
+        if (Physics.Raycast(ray, out hit, 1000f, entityMask))
         {
             Health enemyHealth = hit.collider.GetComponentInParent<Health>();
-            UnitStats enemyStats = hit.collider.GetComponentInParent<UnitStats>();
-            UnitController enemyController = hit.collider.GetComponentInParent<UnitController>();
+            EntityStats enemyStats = hit.collider.GetComponentInParent<EntityStats>();
 
             if (enemyHealth != null && enemyStats != null)
             {
                 if (enemyStats.teamID != 1 && enemyStats.teamID != 0)
                 {
-                    foreach (var unit in selectedUnits) unit.SetTarget(enemyHealth);
+                    foreach (var ctrl in selectedControllers) ctrl.SetTarget(enemyHealth);
                     return;
                 }
             }
@@ -277,26 +262,25 @@ public class SelectionController : MonoBehaviour
             ResourceSource resource = hit.collider.GetComponentInParent<ResourceSource>();
             if (resource != null)
             {
-                foreach (var unit in selectedUnits) unit.SetResourceTarget(resource);
+                foreach (var ctrl in selectedControllers) ctrl.SetResourceTarget(resource);
                 return;
             }
         }
 
         if (Physics.Raycast(ray, out hit, 1000f, groundLayer))
         {
-            for (int i = 0; i < selectedUnits.Count; i++)
+            for (int i = 0; i < selectedControllers.Count; i++)
             {
                 if (i == 0) 
                 {
-                    selectedUnits[i].MoveTo(hit.point); 
+                    selectedControllers[i].MoveTo(hit.point); 
                 }
                 else 
                 {
                     float angle = i * 137.5f * Mathf.Deg2Rad; 
                     float radius = 1.5f * Mathf.Sqrt(i); 
-                    
                     Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-                    selectedUnits[i].MoveTo(hit.point + offset);
+                    selectedControllers[i].MoveTo(hit.point + offset);
                 }
             }
         }
@@ -305,28 +289,22 @@ public class SelectionController : MonoBehaviour
     void SetAllRadiusesVisible(bool visible)
     {
         RadiusVisualizer[] visualizers = FindObjectsByType<RadiusVisualizer>(FindObjectsInactive.Exclude);
-        foreach (var vis in visualizers)
-        {
-            vis.ToggleRadiuses(visible);
-        }
+        foreach (var vis in visualizers) vis.ToggleRadiuses(visible);
     }
 
-    public List<UnitController> GetSelectedUnits()
+    public List<EntityController> GetSelectedControllers()
     {
-        return selectedUnits;
+        return selectedControllers;
     }
 
-    public UnitController GetMainSelectedUnit()
+    public EntityController GetMainSelectedController()
     {
-        if (selectedUnits.Count > 0)
-        {
-            return selectedUnits[0];
-        }
+        if (selectedControllers.Count > 0) return selectedControllers[0];
         return null;
     }
 
-    public UnitStats GetInspectedUnit()
+    public EntityStats GetInspectedEntity()
     {
-        return inspectedUnit;
+        return inspectedEntity;
     }
 }

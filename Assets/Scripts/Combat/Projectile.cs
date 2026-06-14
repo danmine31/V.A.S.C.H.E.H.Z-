@@ -2,50 +2,52 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 20f;
+    public float speed = 40f;
     private float damage;
-    private Health target;
-    
-    private UnitStats attackerStats;
+    private EntityStats attackerStats;
     private float armorPen;
     private bool isCritHit; 
+    
+    private Vector3 flyDirection;
 
-    public void Setup(Health enemyTarget, float bulletDamage, UnitStats attacker, float penetration, bool isCrit = false)
+    public void Setup(Vector3 direction, float bulletDamage, EntityStats attacker, float penetration, bool isCrit = false)
     {
-        target = enemyTarget;
+        flyDirection = direction;
         damage = bulletDamage;
         attackerStats = attacker;
         armorPen = penetration;
         isCritHit = isCrit;
 
-        Destroy(gameObject, 5f);
+        transform.rotation = Quaternion.LookRotation(flyDirection);
+
+        Destroy(gameObject, 3f);
     }
 
     void Update()
     {
-        if (target == null) { Destroy(gameObject); return; }
-
-        Vector3 direction = (target.transform.position - transform.position).normalized;
         float moveDistance = speed * Time.deltaTime;
 
-        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, moveDistance))
+        if (Physics.Raycast(transform.position, flyDirection, out RaycastHit hit, moveDistance))
         {
-            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Unit"))
+            int hitLayer = hit.collider.gameObject.layer;
+            
+            if (hitLayer == LayerMask.NameToLayer("Unit") || hitLayer == LayerMask.NameToLayer("Vehicle") || hitLayer == LayerMask.NameToLayer("Building"))
             {
-                if (hit.collider.GetComponentInParent<LootBox>() == null)
+                Health targetHealth = hit.collider.GetComponentInParent<Health>();
+                if (targetHealth != null)
                 {
-                    Destroy(gameObject); 
-                    return;
+                    targetHealth.TakeDamage(damage, attackerStats, armorPen, isCritHit);
                 }
+                Destroy(gameObject);
+                return;
+            }
+            else if (hit.collider.GetComponentInParent<LootBox>() == null)
+            {
+                Destroy(gameObject); 
+                return;
             }
         }
 
-        transform.position += direction * moveDistance;
-
-        if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
-        {
-            target.TakeDamage(damage, attackerStats, armorPen, isCritHit);
-            Destroy(gameObject);
-        }
+        transform.position += flyDirection * moveDistance;
     }
 }

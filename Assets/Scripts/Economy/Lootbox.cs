@@ -28,18 +28,8 @@ public class LootBox : MonoBehaviour
     {
         if (boxContents != null)
         {
-            if (boxContents.Count > maxSlots)
-            {
-                boxContents.RemoveRange(maxSlots, boxContents.Count - maxSlots);
-            }
-
-            foreach (var item in boxContents)
-            {
-                if (item.amount > maxStackSize)
-                {
-                    item.amount = maxStackSize;
-                }
-            }
+            if (boxContents.Count > maxSlots) boxContents.RemoveRange(maxSlots, boxContents.Count - maxSlots);
+            foreach (var item in boxContents) if (item.amount > maxStackSize) item.amount = maxStackSize;
         }
     }
 
@@ -58,15 +48,15 @@ public class LootBox : MonoBehaviour
         }
     }
 
-    public void InteractWithBox(List<UnitController> squad)
+    public void InteractWithBox(List<EntityController> squad)
     {
         StartCoroutine(WaitForSquadCoroutine(squad));
     }
 
-    private IEnumerator WaitForSquadCoroutine(List<UnitController> squad)
+    private IEnumerator WaitForSquadCoroutine(List<EntityController> squad)
     {
         if (squad == null || squad.Count == 0) yield break;
-        UnitController leader = squad[0];
+        EntityController leader = squad[0];
 
         while (leader != null && Vector3.Distance(leader.transform.position, transform.position) > 3f)
         {
@@ -76,15 +66,10 @@ public class LootBox : MonoBehaviour
         OpenLootUI(squad);
     }
 
-    private void OpenLootUI(List<UnitController> squad)
+    private void OpenLootUI(List<EntityController> squad)
     {
         LootUI ui = FindAnyObjectByType<LootUI>();
-        if (ui != null)
-        {
-            ui.OpenLoot(this);
-        }
-
-        Debug.Log($"<color=yellow>[{gameObject.name}]: Открыто окно сундука! Ждем действий игрока...</color>");
+        if (ui != null) ui.OpenLoot(this);
     }
 
     public void AddItem(ItemType type, int amount)
@@ -114,12 +99,7 @@ public class LootBox : MonoBehaviour
             if (boxType == LootBoxType.Dropped)
             {
                 LootUI ui = FindAnyObjectByType<LootUI>();
-                if (ui != null && ui.CurrentLootBox == this && ui.lootPanel.activeInHierarchy)
-                {
-                    return; 
-                }
-
-                Debug.Log("Трупный лут полностью собран и окно закрыто. Уничтожаем объект.");
+                if (ui != null && ui.CurrentLootBox == this && ui.lootPanel.activeInHierarchy) return; 
                 Destroy(gameObject);
             }
             else if (boxType == LootBoxType.Chest)

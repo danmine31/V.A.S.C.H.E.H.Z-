@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Портрет и Тексты")]
     public RawImage portraitImage;
-    public TextMeshProUGUI unitNameText;
+    public TextMeshProUGUI entityNameText;
     public TextMeshProUGUI statsText;
     public TextMeshProUGUI ammoText; 
     public TextMeshProUGUI medkitText;
@@ -21,19 +21,12 @@ public class UIManager : MonoBehaviour
     public Button inventoryButton;
     public Button healButton;
 
-    void Awake()
-    {
-        if (Instance == null) Instance = this;
-    }
+    void Awake() { if (Instance == null) Instance = this; }
 
     void Update()
     {
         UpdateHUD();
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            OnHealButtonClicked();
-        }
+        if (Input.GetKeyDown(KeyCode.X)) OnHealButtonClicked();
     }
 
     void UpdateHUD()
@@ -41,65 +34,65 @@ public class UIManager : MonoBehaviour
         if (SelectionController.Instance == null) return;
 
         if (influenceText != null && GameManager.Instance != null)
-        {
             influenceText.text = $"<color=orange>Влияние: {GameManager.Instance.influencePoints}</color>";
-        }
         
-        UnitController selectedUnit = SelectionController.Instance.GetMainSelectedUnit();
-        UnitStats inspectedUnit = SelectionController.Instance.GetInspectedUnit();
+        EntityController selectedController = SelectionController.Instance.GetMainSelectedController();
+        EntityStats inspectedEntity = SelectionController.Instance.GetInspectedEntity();
 
-        bool isOwnUnit = (selectedUnit != null);
+        bool isOwnUnit = (selectedController != null);
 
-        UnitStats displayStats = null;
-        if (selectedUnit != null) 
-            displayStats = selectedUnit.GetComponent<UnitStats>();
-        else 
-            displayStats = SelectionController.Instance.GetInspectedUnit();
-
-        if (bottomHUD != null && !bottomHUD.activeSelf) 
-            bottomHUD.SetActive(true);
+        EntityStats displayStats = selectedController != null ? selectedController.GetComponent<EntityStats>() : inspectedEntity;
 
         if (displayStats != null)
         {
+            if (bottomHUD != null) bottomHUD.SetActive(true);
+
             Health health = displayStats.GetComponent<Health>();
             UnitInventory inventory = displayStats.GetComponent<UnitInventory>();
+            WeaponComponent weapon = displayStats.GetComponent<WeaponComponent>();
 
             if (portraitImage != null) portraitImage.enabled = true;
 
             if (health != null)
             {
-                if (unitNameText != null)
+                if (entityNameText != null)
                 {
-                    int selectedCount = SelectionController.Instance.GetSelectedUnits().Count;
+                    int selectedCount = SelectionController.Instance.GetSelectedControllers().Count;
                     if (selectedCount > 1)
-                    {
-                        unitNameText.text = $"{displayStats.unitName}\n<color=yellow><size=70%>ВЫДЕЛЕНО: {selectedCount}</size></color>";
-                    }
-                    else unitNameText.text = displayStats.unitName;
+                        entityNameText.text = $"{displayStats.entityName}\n<color=yellow><size=70%>ВЫДЕЛЕНО: {selectedCount}</size></color>";
+                    else 
+                        entityNameText.text = displayStats.entityName;
                 }
 
                 if (statsText != null) 
                 {
-                    statsText.text = 
-                        $"Уровень: {displayStats.level} (Опыт: {Mathf.Round(displayStats.currentXP)} / {Mathf.Round(displayStats.GetXPForNextLevel())})\n" +
-                        $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\n" +
-                        $"Урон: {displayStats.minDamage}-{displayStats.maxDamage} | Пробой: {displayStats.armorPenetration}\n" +
-                        $"Крит: {displayStats.critChance}% (x{displayStats.critMultiplier})\n" +
-                        $"Броня: {displayStats.armor} | Уворот: {displayStats.dodgeChance}%\n" +
-                        $"Дальность: {displayStats.attackRange}";
+                    string weaponStats = weapon != null 
+                        ? $"Урон: {weapon.minDamage}-{weapon.maxDamage} | Пробой: {weapon.armorPenetration}\nКрит: {weapon.critChance}% (x{weapon.critMultiplier})\nДальность: {weapon.attackRange}"
+                        : "Оружие: Нет (Рабочий)";
+
+                    if (displayStats is UnitStats uStats)
+                    {
+                        statsText.text = 
+                            $"Уровень: {uStats.level} (Опыт: {Mathf.Round(uStats.currentXP)} / {Mathf.Round(uStats.GetXPForNextLevel())})\n" +
+                            $"ХП: {Mathf.Round(health.currentHealth)} / {uStats.maxHealth}\n" +
+                            weaponStats + "\n" +
+                            $"Броня: {uStats.armor} | Уворот: {uStats.dodgeChance}%";
+                    }
+                    else
+                    {
+                        string buildWpnStats = weapon != null ? $"\nУрон: {weapon.minDamage}-{weapon.maxDamage} | Дальность: {weapon.attackRange}" : "";
+                        statsText.text = $"ХП: {Mathf.Round(health.currentHealth)} / {displayStats.maxHealth}\nБроня: {displayStats.armor}" + buildWpnStats;
+                    }
                 }
             }
 
             if (inventory != null)
             {
-                int totalAmmo = 0;
-                int totalMedkits = 0;
-
-                foreach (var unit in SelectionController.Instance.GetSelectedUnits())
+                int totalAmmo = 0, totalMedkits = 0;
+                foreach (var ctrl in SelectionController.Instance.GetSelectedControllers())
                 {
-                    if (unit == null) continue;
-
-                    UnitInventory inv = unit.GetComponent<UnitInventory>();
+                    if (ctrl == null) continue;
+                    UnitInventory inv = ctrl.GetComponent<UnitInventory>();
                     if (inv != null)
                     {
                         totalAmmo += inv.GetItemCount(ItemType.Ammo);
@@ -131,12 +124,12 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            if (bottomHUD != null) bottomHUD.SetActive(false);
             if (portraitImage != null) portraitImage.enabled = false;
-            if (unitNameText != null) unitNameText.text = "";
+            if (entityNameText != null) entityNameText.text = "";
             if (statsText != null) statsText.text = "";
             if (ammoText != null) ammoText.text = "";
             if (medkitText != null) medkitText.text = "";
-
             if (inventoryButton != null) inventoryButton.interactable = false;
             if (healButton != null) healButton.interactable = false;
         }
@@ -151,11 +144,11 @@ public class UIManager : MonoBehaviour
     public void OnHealButtonClicked()
     {
         if (SelectionController.Instance == null) return;
-        foreach (var unit in SelectionController.Instance.GetSelectedUnits())
+        foreach (var ctrl in SelectionController.Instance.GetSelectedControllers())
         {
-            if (unit != null)
+            if (ctrl != null)
             {
-                Health h = unit.GetComponent<Health>();
+                Health h = ctrl.GetComponent<Health>();
                 if (h != null && h.currentHealth < h.maxHealth) h.TryStartHealing();
             }
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class LootDistributor
 {
-    public static int DistributeAmongSquad(List<UnitController> squad, ItemType item, int totalAmount)
+    public static int DistributeAmongSquad(List<EntityController> squad, ItemType item, int totalAmount)
     {
         int remainingAmount = totalAmount;
         bool isConsumable = (item == ItemType.Ammo || item == ItemType.Medkit || 
@@ -16,9 +16,9 @@ public static class LootDistributor
             if (isConsumable)
             {
                 int minAmount = int.MaxValue;
-                foreach (var unit in squad)
+                foreach (var ctrl in squad)
                 {
-                    UnitInventory inv = unit.GetComponent<UnitInventory>();
+                    UnitInventory inv = ctrl.GetComponent<UnitInventory>();
                     if (inv != null && inv.CanAcceptItem(item))
                     {
                         int currentAmount = inv.GetItemCount(item);
@@ -32,9 +32,9 @@ public static class LootDistributor
             }
             else
             {
-                foreach (var unit in squad)
+                foreach (var ctrl in squad)
                 {
-                    UnitInventory inv = unit.GetComponent<UnitInventory>();
+                    UnitInventory inv = ctrl.GetComponent<UnitInventory>();
                     if (inv != null && inv.slots.Count < inv.maxSlots)
                     {
                         bestTarget = inv;

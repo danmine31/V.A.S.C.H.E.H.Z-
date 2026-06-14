@@ -17,8 +17,8 @@ public class PortraitCamera : MonoBehaviour
     {
         if (SelectionController.Instance == null) return;
 
-        UnitController selected = SelectionController.Instance.GetMainSelectedUnit();
-        UnitStats inspected = SelectionController.Instance.GetInspectedUnit();
+        EntityController selected = SelectionController.Instance.GetMainSelectedController();
+        EntityStats inspected = SelectionController.Instance.GetInspectedEntity();
 
         Transform target = null;
         if (selected != null) target = selected.transform;
@@ -27,7 +27,6 @@ public class PortraitCamera : MonoBehaviour
         if (target != null)
         {
             transform.position = target.position + target.forward * 2.5f + target.right * 1f + Vector3.up * 1.5f;
-            
             transform.LookAt(target.position + Vector3.up * 1.5f);
         }
     }

@@ -89,10 +89,10 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         {
             if (panelType == SlotPanelType.Inventory && selectionCtrl != null)
             {
-                UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
-                if (activeUnit != null)
+                EntityController activeCtrl = selectionCtrl.GetMainSelectedController();
+                if (activeCtrl != null)
                 {
-                    UnitInventory unitInv = activeUnit.GetComponent<UnitInventory>();
+                    UnitInventory unitInv = activeCtrl.GetComponent<UnitInventory>();
                     if (unitInv != null && slotIndex < unitInv.slots.Count)
                     {
                         Debug.Log($"<color=red>Предмет {unitInv.slots[slotIndex].itemType} выброшен и уничтожен!</color>");
@@ -110,13 +110,9 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
         if (targetSlot != null && targetSlot != draggedSlot)
         {
             if (draggedSlot.panelType == SlotPanelType.LootBox && targetSlot.panelType == SlotPanelType.Inventory)
-            {
                 draggedSlot.TransferFromLootToInventory(true, false);
-            }
             else if (draggedSlot.panelType == SlotPanelType.Inventory && targetSlot.panelType == SlotPanelType.LootBox)
-            {
                 draggedSlot.TransferFromInventoryToLoot(true);
-            }
         }
         
         draggedSlot = null;
@@ -135,15 +131,15 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
 
         if (distribute)
         {
-            List<UnitController> squad = selectionCtrl.GetSelectedUnits();
+            List<EntityController> squad = selectionCtrl.GetSelectedControllers();
             leftover = LootDistributor.DistributeAmongSquad(squad, lootItem.itemType, amountToTransfer);
         }
         else
         {
-            UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
-            if (activeUnit != null)
+            EntityController activeCtrl = selectionCtrl.GetMainSelectedController();
+            if (activeCtrl != null)
             {
-                List<UnitController> singleUnitList = new List<UnitController> { activeUnit };
+                List<EntityController> singleUnitList = new List<EntityController> { activeCtrl };
                 leftover = LootDistributor.DistributeAmongSquad(singleUnitList, lootItem.itemType, amountToTransfer);
             }
         }
@@ -161,9 +157,11 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, ID
     public void TransferFromInventoryToLoot(bool allStack)
     {
         if (lootUI == null || lootUI.CurrentLootBox == null || selectionCtrl == null) return;
-        UnitController activeUnit = selectionCtrl.GetMainSelectedUnit();
-        if (activeUnit == null) return;
-        UnitInventory unitInv = activeUnit.GetComponent<UnitInventory>();
+        
+        EntityController activeCtrl = selectionCtrl.GetMainSelectedController();
+        if (activeCtrl == null) return;
+        
+        UnitInventory unitInv = activeCtrl.GetComponent<UnitInventory>();
         if (unitInv == null) return;
 
         if (slotIndex >= unitInv.slots.Count) return;

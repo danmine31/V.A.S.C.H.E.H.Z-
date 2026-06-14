@@ -14,12 +14,10 @@ public class LootUI : MonoBehaviour
     private LootBox currentLootBox;
 
     private InventoryUI inventoryUI;
-    private SelectionController selectionCtrl;
 
     void Start()
     {
         inventoryUI = FindAnyObjectByType<InventoryUI>();
-        
         if (lootPanel != null) lootPanel.SetActive(false);
     }
 
@@ -27,7 +25,7 @@ public class LootUI : MonoBehaviour
     {
         if (lootPanel != null && lootPanel.activeInHierarchy)
         {
-            UnitController activeUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedUnit() : null;
+            EntityController activeUnit = SelectionController.Instance != null ? SelectionController.Instance.GetMainSelectedController() : null;
 
             if (activeUnit == null || currentLootBox == null)
             {

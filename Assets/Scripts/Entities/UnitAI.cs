@@ -5,10 +5,6 @@ public enum AIBehavior { Passive, Patrol, Defend, Aggressive }
 
 public class UnitAI : MonoBehaviour
 {
-    [Header("Звуки")]
-    public AudioClip shootSound;
-    private AudioSource audioSource;
-
     [Header("Для Зданий (Вращение пушки)")]
     public Transform turretModel;
 
@@ -17,15 +13,9 @@ public class UnitAI : MonoBehaviour
     public bool canAttack = true;
     
     [Header("Настройки радиусов")]
-    public float attackRange = 10f;
     public float aggroRadius = 15f;
     public float maxChaseDistance = 25f;
     public float patrolRadius = 10f;
-
-    [Header("Стрельба")]
-    public GameObject bulletPrefab;
-    public Transform firePoint;
-    private float nextAttackTime;
 
     [HideInInspector] public bool isManualControl = false; 
 
@@ -36,35 +26,30 @@ public class UnitAI : MonoBehaviour
     
     private Health myHealth;
     private UnitStats myStats;
+
     [Header("Принадлежность")]
     public int teamID;
     public FactionType faction;
 
-    [Header("Характеристики")]
-    public float baseDamage = 10f;
-    public float currentDamage;
+    public float attackRange 
+    {
+        get 
+        {
+            WeaponComponent weapon = GetComponent<WeaponComponent>();
+            return weapon != null ? weapon.attackRange : 0f;
+        }
+    }
 
-    void OnEnable()
-    {
-        EnvironmentManager.OnTimeChanged += ApplyWeatherBuffs;
-    }
-    void OnDisable()
-    {
-        EnvironmentManager.OnTimeChanged -= ApplyWeatherBuffs;
-    }
+    void OnEnable() { EnvironmentManager.OnTimeChanged += ApplyWeatherBuffs; }
+    void OnDisable() { EnvironmentManager.OnTimeChanged -= ApplyWeatherBuffs; }
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         myHealth = GetComponent<Health>();
         myStats = GetComponent<UnitStats>();
-        currentDamage = baseDamage;
 
-        if (myStats != null && agent != null)
-        {
-            agent.speed = myStats.moveSpeed;
-        }
+        if (myStats != null && agent != null) agent.speed = myStats.moveSpeed;
         
         startPosition = transform.position;
         RadiusVisualizer visualizer = GetComponent<RadiusVisualizer>();
@@ -131,7 +116,7 @@ public class UnitAI : MonoBehaviour
 
     void PatrolLogic()
     {
-        if (agent.isOnNavMesh && !agent.pathPending && agent.remainingDistance < 0.5f)
+        if (agent != null && agent.isOnNavMesh && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
             patrolTimer += Time.deltaTime;
             if (patrolTimer > 2f)
@@ -193,48 +178,10 @@ public class UnitAI : MonoBehaviour
 
     public void PerformAttack(Health target)
     {
-        if (target == null || myStats == null) return;
-
-        if (Time.time >= nextAttackTime)
+        WeaponComponent weapon = GetComponent<WeaponComponent>();
+        if (weapon != null && myStats != null)
         {
-            if (myStats.ownerID == 1)
-            {
-                UnitInventory inventory = GetComponent<UnitInventory>();
-                if (inventory != null)
-                {
-                    if (inventory.GetItemCount(ItemType.Ammo) > 0)
-                    {
-                        inventory.RemoveItem(ItemType.Ammo, 1);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
-
-            if (bulletPrefab == null || firePoint == null) return;
-
-            float roll = Random.Range(myStats.minDamage, myStats.maxDamage);
-            bool isCrit = Random.Range(0f, 100f) <= myStats.critChance;
-            float finalDamage = isCrit ? roll * myStats.critMultiplier : roll;
-
-            if (isCrit) Debug.Log($"<color=red>КРИТ! {myStats.unitName} бьет на {finalDamage} урона!</color>");
-
-            GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-            Projectile projectile = bulletObj.GetComponent<Projectile>();
-
-            if (projectile != null)
-            {
-                projectile.Setup(target, finalDamage, myStats, myStats.armorPenetration, isCrit);
-            }
-
-            if (shootSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(shootSound);
-            }
-            
-            nextAttackTime = Time.time + myStats.attackSpeed;
+            weapon.Fire(target, myStats);
         }
     }
 
@@ -248,7 +195,7 @@ public class UnitAI : MonoBehaviour
         {
             if (unitHealth == null || unitHealth == myHealth) continue; 
 
-            UnitStats targetStats = unitHealth.GetComponent<UnitStats>();
+            EntityStats targetStats = unitHealth.GetComponent<EntityStats>();
             
             if (myStats != null && targetStats != null)
             {
@@ -266,23 +213,23 @@ public class UnitAI : MonoBehaviour
         targetEnemy = closestTarget;
     }
 
-    public void SetBasePosition(Vector3 newPos)
-    {
-        startPosition = newPos;
-    }
+    public void SetBasePosition(Vector3 newPos) { startPosition = newPos; }
 
     void ApplyWeatherBuffs(TimeOfDay time)
     {
-        currentDamage = baseDamage;
+        WeaponComponent weapon = GetComponent<WeaponComponent>();
+        if (weapon == null) return;
+
+        weapon.damageMultiplier = 1f;
 
         if (teamID == 1 && time == TimeOfDay.Night)
         {
-            currentDamage *= 1.5f; 
+            weapon.damageMultiplier = 1.5f; 
             Debug.Log("Маги усилены ночью!");
         }
         else if (teamID == 2 && time == TimeOfDay.Day)
         {
-            currentDamage *= 1.5f;
+            weapon.damageMultiplier = 1.5f;
             Debug.Log("Роботы усилены днём!");
         }
     }
@@ -298,7 +245,9 @@ public class UnitAI : MonoBehaviour
         if (Physics.Raycast(start, dir.normalized, out RaycastHit hit, dir.magnitude))
         {
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && 
-                hit.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
+                hit.collider.gameObject.layer != LayerMask.NameToLayer("Ground") &&
+                hit.collider.gameObject.layer != LayerMask.NameToLayer("Building") &&
+                hit.collider.gameObject.layer != LayerMask.NameToLayer("Vehicle"))
             {
                 return false;
             }

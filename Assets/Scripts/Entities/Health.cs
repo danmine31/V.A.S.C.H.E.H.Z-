@@ -13,7 +13,7 @@ public struct DropItem
 
 public class Health : MonoBehaviour
 {
-    private UnitStats stats;
+    private EntityStats stats;
 
     [Header("Звуки")]
     public AudioClip deathSound;
@@ -26,7 +26,7 @@ public class Health : MonoBehaviour
     public GameObject lootBoxPrefab;
     public List<DropItem> dropTable = new List<DropItem>();
 
-    private Dictionary<UnitStats, float> damageContributors = new Dictionary<UnitStats, float>();
+    private Dictionary<EntityStats, float> damageContributors = new Dictionary<EntityStats, float>();
 
     [Header("UI")]
     public GameObject healthBarPrefab;
@@ -38,22 +38,22 @@ public class Health : MonoBehaviour
 
     void Start()
     {
-        stats = GetComponent<UnitStats>();
+        stats = GetComponent<EntityStats>();
 
         if (stats != null) maxHealth = stats.maxHealth;
-        if (currentHealth == 0) currentHealth = maxHealth;
+        if (currentHealth <= 0) currentHealth = maxHealth;
 
         if (healthBarPrefab != null)
         {
             GameObject hbObj = Instantiate(healthBarPrefab, this.transform);
             healthBar = hbObj.GetComponent<HealthBar>();
-            Debug.Log($"[{gameObject.name}] Слайдер MaxValue: {healthBar.slider.maxValue}, Value: {healthBar.slider.value}");
 
             if (healthBar != null)
             {
                 healthBar.target = this.transform;
                 healthBar.UpdateHealthBar(currentHealth, maxHealth);
-                int lvl = stats != null ? stats.level : 1;
+
+                int lvl = (stats is UnitStats uStats) ? uStats.level : 1;
                 healthBar.UpdateLevelText(lvl);
 
                 if (GameManager.Instance != null && stats != null)
@@ -63,19 +63,17 @@ public class Health : MonoBehaviour
                 }
             }
         }
-        Debug.Log($"[{gameObject.name}] Мой OwnerID: {stats.ownerID}. Цвет из менеджера: {GameManager.Instance.GetPlayerColor(stats.ownerID)}");
-        Debug.Log($"[{gameObject.name}] HP: {currentHealth} / {maxHealth}");
     }
 
     void Update()
     {
-        if (stats != null && stats.canRegen && currentHealth < maxHealth && currentHealth > 0)
+        if (stats is UnitStats unitStats && unitStats.canRegen && currentHealth < maxHealth && currentHealth > 0)
         {
             regenTimer += Time.deltaTime;
             
-            if (regenTimer >= stats.regenTickRate)
+            if (regenTimer >= unitStats.regenTickRate)
             {
-                float healAmount = maxHealth * (stats.regenPercentPerTick / 100f);
+                float healAmount = maxHealth * (unitStats.regenPercentPerTick / 100f);
                 Heal(healAmount);
                 regenTimer = 0f;
             }
@@ -92,7 +90,7 @@ public class Health : MonoBehaviour
         if (healthBar != null) 
         {
             healthBar.UpdateHealthBar(currentHealth, maxHealth);
-            int lvl = stats != null ? stats.level : 1;
+            int lvl = (stats is UnitStats uStats) ? uStats.level : 1;
             healthBar.UpdateLevelText(lvl);
         }
     }
@@ -121,7 +119,6 @@ public class Health : MonoBehaviour
     private IEnumerator HealingProcessCoroutine(UnitInventory inventory, UnitAI ai)
     {
         isHealing = true;
-        Debug.Log($"<color=green>{stats.unitName} лечится (5 секунд)...</color>");
         
         float timer = 0f;
         Vector3 startPos = transform.position;
@@ -129,12 +126,10 @@ public class Health : MonoBehaviour
         while (timer < 5f)
         {
             timer += Time.deltaTime;
-            
             if (healthBar != null) healthBar.UpdateActionBar(timer / 5f);
 
             if (Vector3.Distance(startPos, transform.position) > 0.5f)
             {
-                Debug.Log($"<color=red>Лечение прервано!</color>");
                 isHealing = false;
                 if (ai != null) ai.isManualControl = false;
                 if (healthBar != null) healthBar.UpdateActionBar(0f);
@@ -155,13 +150,13 @@ public class Health : MonoBehaviour
         if (ai != null) ai.isManualControl = false;
     }
 
-    public void TakeDamage(float amount, UnitStats attacker, float armorPenetration = 0f, bool isCrit = false)
+    public void TakeDamage(float amount, EntityStats attacker, float armorPenetration = 0f, bool isCrit = false)
     {
-        if (stats != null)
+        if (stats is UnitStats unitStats)
         {
-            if (Random.Range(0f, 100f) <= stats.dodgeChance)
+            if (Random.Range(0f, 100f) <= unitStats.dodgeChance)
             {
-                Debug.Log($"<color=cyan>{stats.unitName} уклонился от атаки!</color>");
+                Debug.Log($"<color=cyan>{stats.entityName} уклонился от атаки!</color>");
                 return; 
             }
         }
@@ -170,13 +165,13 @@ public class Health : MonoBehaviour
 
         if (stats != null && attacker != null)
         {
-            Fraction attackerFraction = attacker.unitFraction;
+            Fraction attackerFraction = attacker.entityFraction;
 
-            if (attackerFraction == Fraction.Mages && stats.unitFraction == Fraction.People)
+            if (attackerFraction == Fraction.Mages && stats.entityFraction == Fraction.People)
                 finalDamage *= 1.5f;
-            if (attackerFraction == Fraction.People && stats.unitFraction == Fraction.Robots)
+            if (attackerFraction == Fraction.People && stats.entityFraction == Fraction.Robots)
                 finalDamage *= 1.5f;
-            if (attackerFraction == Fraction.Robots && stats.unitFraction == Fraction.Mages)
+            if (attackerFraction == Fraction.Robots && stats.entityFraction == Fraction.Mages)
                 finalDamage *= 1.5f;
 
             float effectiveArmor = Mathf.Max(0, stats.armor - armorPenetration);
@@ -196,7 +191,7 @@ public class Health : MonoBehaviour
         if (healthBar != null) 
         {
             healthBar.UpdateHealthBar(currentHealth, maxHealth);
-            int lvl = stats != null ? stats.level : 1;
+            int lvl = (stats is UnitStats uStats) ? uStats.level : 1;
             healthBar.UpdateLevelText(lvl);
         }
 
@@ -245,10 +240,10 @@ public class Health : MonoBehaviour
 
         foreach (var kvp in damageContributors)
         {
-            if (kvp.Key != null && kvp.Key.gameObject != null)
+            if (kvp.Key is UnitStats unitAttacker && unitAttacker.gameObject != null)
             {
                 float share = kvp.Value / totalDamage;
-                kvp.Key.AddXP(xpReward * share);
+                unitAttacker.AddXP(xpReward * share);
             }
         }
     }

@@ -54,10 +54,11 @@ public class CraftingManager : MonoBehaviour
     private UnitInventory GetActiveInventory()
     {
         if (SelectionController.Instance == null) return null;
-        UnitController activeUnit = SelectionController.Instance.GetMainSelectedUnit();
-        if (activeUnit != null)
+        
+        EntityController activeCtrl = SelectionController.Instance.GetMainSelectedController();
+        if (activeCtrl != null)
         {
-            return activeUnit.GetComponent<UnitInventory>();
+            return activeCtrl.GetComponent<UnitInventory>();
         }
         return null;
     }

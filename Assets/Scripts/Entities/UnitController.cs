@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum FactionType { Human, Mage, Robot }
+public enum FactionType { None, Human, Mage, Robot }
 
-public class UnitController : MonoBehaviour
+public class UnitController : EntityController
 {
     [Header("Настройки команды")]
     public FactionType faction;
@@ -91,7 +91,6 @@ public class UnitController : MonoBehaviour
                 if (!agent.pathPending)
                 {
                     bool reachedExactly = agent.remainingDistance <= agent.stoppingDistance;
-                    
                     bool stuckInCrowd = agent.remainingDistance <= 2.5f && agent.velocity.sqrMagnitude < 0.1f;
 
                     if (reachedExactly || stuckInCrowd)
@@ -107,7 +106,6 @@ public class UnitController : MonoBehaviour
 
     void HandleResourceGathering()
     {
-        UnitStats stats = GetComponent<UnitStats>();
         if (inventory != null && inventory.IsFull)
         {
             Debug.Log($"<color=yellow>[ДОБЫЧА] Инвентарь юнита {gameObject.name} полон! Добыча остановлена.</color>");
@@ -137,10 +135,7 @@ public class UnitController : MonoBehaviour
             if (gatherTimer >= targetResource.gatherTime)
             {
                 int amount = targetResource.Gather(2);
-                if (amount > 0)
-                {
-                    inventory.AddResource(targetResource.type, amount);
-                }
+                if (amount > 0) inventory.AddResource(targetResource.type, amount);
                 gatherTimer = 0f;
                 if (myHealth != null && myHealth.healthBar != null) myHealth.healthBar.UpdateActionBar(0f);
             }
@@ -155,7 +150,7 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public void MoveTo(Vector3 point)
+    public override void MoveTo(Vector3 point)
     {
         if (autoPilot != null) autoPilot.isManualControl = true;
         
@@ -165,7 +160,7 @@ public class UnitController : MonoBehaviour
         agent.SetDestination(point);
     }
 
-    public void SetTarget(Health enemy)
+    public override void SetTarget(Health enemy)
     {
         UnitAI ai = GetComponent<UnitAI>();
         if (ai != null && !ai.canAttack)
@@ -180,7 +175,7 @@ public class UnitController : MonoBehaviour
         targetEnemy = enemy;
     }
 
-    public void SetResourceTarget(ResourceSource resource)
+    public override void SetResourceTarget(ResourceSource resource)
     {
         if (autoPilot != null) autoPilot.isManualControl = true;
         

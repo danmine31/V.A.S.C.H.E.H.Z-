@@ -19,10 +19,19 @@ public class HealthBar : MonoBehaviour
         transform.LookAt(transform.position + Camera.main.transform.forward);
     }
 
-    public void SetColor(Color c)
+    public void SetColor(Color c) 
     {
-        Debug.Log($"Применяю цвет {c} для объекта {gameObject.name}");
-        if (fillImage != null) fillImage.color = c;
+        Color solidColor = new Color(c.r, c.g, c.b, 0.95f);
+
+        if (fillImage != null) 
+        {
+            fillImage.color = solidColor;
+        }
+
+        if (levelText != null)
+        {
+            levelText.color = Color.white; 
+        }
     }
 
     public void UpdateHealthBar(float currentValue, float maxValue)
